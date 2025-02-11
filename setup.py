@@ -24,7 +24,7 @@ def read_requirements(path):
 
 setup(
     name="agropy",
-    version=read("agropy", "version"),
+    version="0.0.1",
     description="Python library for agricultural management and analysis.",
     url="https://github.com/TimoKats/agropy",
     long_description=read("readme.md"),
