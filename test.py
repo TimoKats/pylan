@@ -1,12 +1,12 @@
-from agropy import Field, Crop
+from agropy import Collection, Item, Pattern
 
 
 if __name__ == "__main__":
-	potato = Crop("Potato", 1, 2)
-	pumpkin = Crop("Pumkin", 4, 2)
 
-	field = Field(10, 10)
-	field.plant(0, 1, potato)
-	field.plant(2, 3, pumpkin)
+	inflation = Pattern("inflation", "x", "value", 0.9)
+	savings = Item("Savings", {"value": 100})
+	savings.add_pattern(inflation)
 
-	print(field)
+	savings.iterate()
+
+	print(savings.attr)

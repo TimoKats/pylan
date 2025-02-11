@@ -1,5 +1,6 @@
-from agropy.field import *  # noqa: F403
-from agropy.crop import *  # noqa: F403
+from agropy.collection import *  # noqa: F403
+from agropy.item import *  # noqa: F403
+from agropy.pattern import * # noqa: F403
 
 def test():
 	print("hello from agropy")
