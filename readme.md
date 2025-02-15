@@ -1,2 +1,1 @@
-# agropy
-Python library for agricultural management and analysis.
+![logo](https://github.com/TimoKats/pylan/blob/main/.github/logo.png)

@@ -1,4 +1,4 @@
-"""Python setup.py for agropy package"""
+"""Python setup.py for pylan package"""
 import io
 import os
 from setuptools import find_packages, setup
@@ -23,10 +23,10 @@ def read_requirements(path):
 
 
 setup(
-    name="agropy",
+    name="pylan",
     version="0.0.1",
-    description="Python library for agricultural management and analysis.",
-    url="https://github.com/TimoKats/agropy",
+    description="Python library for time based planning.",
+    url="https://github.com/TimoKats/pylan",
     long_description=read("readme.md"),
     long_description_content_type="text/markdown",
     author="Timo Kats",
