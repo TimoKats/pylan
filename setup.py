@@ -23,7 +23,7 @@ def read_requirements(path):
 
 
 setup(
-    name="pylan",
+    name="pylan-lib",
     version="0.0.1",
     description="Python library for time based planning.",
     url="https://github.com/TimoKats/pylan",

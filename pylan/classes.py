@@ -6,21 +6,23 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from pylan.utils import timedelta_from_str
-from pylan.enums import Ops, Granularity
+from pylan.enums import Operators
 
 @dataclass
 class Pattern:
 	schedule: str
 	attribute: str
-	operator: str
+	operator: Operators
 	impact: Any
 	iterations: int = 1  # perhaps keep track of the dates?
 
 	def apply(self, item: Any) -> None:  # fix typing
-		if self.operator == "+":
+		if self.operator == Operators.add:
 			item.attr[self.attribute] += self.impact
-		elif self.operator == "*":
+		elif self.operator == Operators.multiply:
 			item.attr[self.attribute] *= self.impact
+		elif self.operator == Operators.divide:
+			item.attr[self.attribute] /= self.impact
 		else:
 			raise Exception("Operator not supported.")
 
