@@ -2,8 +2,8 @@
 
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from typing import Any
+from datetime import datetime
+from typing import Any, Optional
 
 from pylan.utils import timedelta_from_str
 from pylan.enums import Operators
@@ -14,7 +14,17 @@ class Pattern:
 	attribute: str
 	operator: Operators
 	impact: Any
-	iterations: int = 1  # perhaps keep track of the dates?
+
+	iterations: Optional[int] = 1
+	dt_schedule: Optional[list] = None
+
+	def set_dt_schedule(self, start: datetime, end: datetime) -> None:
+		interval = timedelta_from_str(self.schedule)
+		self.dt_schedule = []
+		current = start
+		while current <= end:
+			self.dt_schedule.append(current)
+			current += interval
 
 	def apply(self, item: Any) -> None:  # fix typing
 		if self.operator == Operators.add:
@@ -26,9 +36,12 @@ class Pattern:
 		else:
 			raise Exception("Operator not supported.")
 
-	def scheduled(self, passed_time: timedelta) -> bool:
-		dt_schedule = timedelta_from_str(self.schedule)
-		if passed_time >= (dt_schedule * self.iterations):
+	def scheduled(self, current: datetime) -> bool:
+		if not self.dt_schedule:
+			raise Exception("Datetime schedule not set.")
+		if self.iterations >= len(self.dt_schedule):
+			return False
+		if current >= self.dt_schedule[self.iterations]:
 			self.iterations += 1
 			return True
 		return False
@@ -54,11 +67,12 @@ class Item:
 		self.patterns.append(pattern)
 
 	def run(self, start: datetime, end: datetime, interval: str) -> list:
+		[ pattern.set_dt_schedule(start, end) for pattern in self.patterns ]
 		dt_interval = timedelta_from_str(interval)
 		current = start
 		while current <= end:
 			for pattern in self.patterns:
-				if pattern.scheduled((current - start)):
+				if pattern.scheduled(current):
 					pattern.apply(self)
 				current += dt_interval
 		return []

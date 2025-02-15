@@ -14,4 +14,3 @@ def timedelta_from_str(interval: str) -> timedelta:
 	elif interval_type == "sec":
 		return timedelta(seconds = count)
 	raise Exception("Inteval type " + interval_type + " not recognized.")
-
