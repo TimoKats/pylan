@@ -68,13 +68,15 @@ class Item:
         self.patterns.append(pattern)
 
     def run(self, start: datetime, end: datetime, interval: str) -> list:
+        if not self.patterns:
+            raise Exception("No patterns have been added.")
         [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
         current = start
         while current <= end:
             for pattern in self.patterns:
                 if pattern.scheduled(current):
                     pattern.apply(self)
-                current += self.granularity.timedelta()
+            current += self.granularity.timedelta()
         return []
 
     def iterate(self):

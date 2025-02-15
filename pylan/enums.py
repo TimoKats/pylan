@@ -35,6 +35,9 @@ class Granularity(Enum):
     week = "w"
     year = "y"
 
+    def __lt__(self, granularity):
+        return self.timedelta() < granularity.timedelta()
+
     @staticmethod
     def from_str(value: str):
         for level in Granularity:
