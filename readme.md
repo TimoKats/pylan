@@ -1,1 +1,1 @@
-![logo](https://github.com/TimoKats/pylan/blob/main/.github/logo.png)
+![logo](https://github.com/TimoKats/pylan/blob/init/.github/logo.png)
