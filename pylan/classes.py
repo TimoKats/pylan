@@ -6,13 +6,12 @@ from datetime import datetime
 from typing import Any, Optional
 
 from pylan.enums import Granularity, Operators
-from pylan.utils import timedelta_from_str
+from pylan.utils import timedelta_from_schedule
 
 
 @dataclass
 class Pattern:
     schedule: str
-    attribute: str
     operator: Operators
     impact: Any
 
@@ -20,12 +19,7 @@ class Pattern:
     dt_schedule: Optional[list] = None
 
     def set_dt_schedule(self, start: datetime, end: datetime) -> None:
-        interval = timedelta_from_str(self.schedule)  # hmmmmm, set list to self.schedule
-        self.dt_schedule = []
-        current = start
-        while current <= end:
-            self.dt_schedule.append(current)
-            current += interval
+        self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
 
     def apply(self, item: Any) -> None:  # fix typing
         current_value = item.value
