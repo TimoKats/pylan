@@ -20,7 +20,7 @@ class Pattern:
     dt_schedule: Optional[list] = None
 
     def set_dt_schedule(self, start: datetime, end: datetime) -> None:
-        interval = timedelta_from_str(self.schedule)
+        interval = timedelta_from_str(self.schedule)  # hmmmmm, set list to self.schedule
         self.dt_schedule = []
         current = start
         while current <= end:
@@ -28,8 +28,8 @@ class Pattern:
             current += interval
 
     def apply(self, item: Any) -> None:  # fix typing
-        current_value = item.attr[self.attribute]
-        item.attr[self.attribute] = self.operator.apply(current_value, self.impact)
+        current_value = item.value
+        item.value = self.operator.apply(current_value, self.impact)
 
     def scheduled(self, current: datetime) -> bool:
         if not self.dt_schedule:
@@ -43,21 +43,17 @@ class Pattern:
 
 
 class Item:
-    def __init__(self, name: str = ".", attr: dict = {}) -> None:
+    def __init__(self, name: str = "", value: int = 0) -> None:
         self.name = name
-        self.start_dt = datetime.today()
         self.patterns = []
         self.iterations = 0
-        self.attr = attr
+        self.value = value
         self.granularity = None
 
     def __str__(self) -> str:
         if len(self.name) > 1:
             return self.name[:2]
         return self.name
-
-    def add_attribute(self, name: str, value: Any) -> None:
-        self.attr[name] = value
 
     def add_pattern(self, pattern: Pattern) -> None:
         pattern_granularity = Granularity.from_str(pattern.schedule)
@@ -67,7 +63,7 @@ class Item:
             self.granularity = pattern_granularity
         self.patterns.append(pattern)
 
-    def run(self, start: datetime, end: datetime, interval: str) -> list:
+    def run(self, start: datetime, end: datetime, interval: str) -> dict:
         if not self.patterns:
             raise Exception("No patterns have been added.")
         [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
@@ -77,7 +73,7 @@ class Item:
                 if pattern.scheduled(current):
                     pattern.apply(self)
             current += self.granularity.timedelta()
-        return []
+        return self.value
 
     def iterate(self):
         self.iterations += 1

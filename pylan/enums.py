@@ -28,8 +28,8 @@ class Operators(Enum):
 
 
 class Granularity(Enum):
-    second = "sec"
-    minute = "min"
+    second = "s"
+    minute = "m"
     hour = "h"
     day = "d"
     week = "w"
@@ -43,7 +43,7 @@ class Granularity(Enum):
         for level in Granularity:
             if level.value in value:
                 return level
-        return Granularity.day  # always ok :)
+        raise Exception("Granularity can't be derived from schedule.")
 
     def timedelta(self) -> timedelta:
         if self == Granularity.second:
