@@ -1,11 +1,9 @@
-# start working with set enums or types to pick granularity from.
-
-
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Optional
 
 from pylan.enums import Granularity, Operators
+from pylan.result import Result
 from pylan.utils import timedelta_from_schedule
 
 
@@ -30,9 +28,9 @@ class Pattern:
             raise Exception("Datetime schedule not set.")
         if self.iterations >= len(self.dt_schedule):
             return False
-        if current == self.dt_schedule[self.iterations]:
-            self.iterations += 1
-            return True
+        if current == self.dt_schedule[self.iterations]:  # NOTE: check for granularity!
+            self.iterations += 1  # NOTE: For example, daily granularity...
+            return True  #  ...only requires day to be equal
         return False
 
 
@@ -57,17 +55,36 @@ class Item:
             self.granularity = pattern_granularity
         self.patterns.append(pattern)
 
-    def run(self, start: datetime, end: datetime, interval: str) -> dict:
+    def run(self, start: datetime, end: datetime, interval: str = "1d") -> list:
         if not self.patterns:
             raise Exception("No patterns have been added.")
         [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
+        result = Result()
         current = start
         while current <= end:
             for pattern in self.patterns:
                 if pattern.scheduled(current):
                     pattern.apply(self)
             current += self.granularity.timedelta()
-        return self.value
+            result.add_result(current, self.value)
+        return result
+
+    def until(self, stop_value: float) -> timedelta:  # NOTE: not funished!
+        if not self.patterns:
+            raise Exception("No patterns have been added.")
+        [
+            pattern.set_dt_schedule(datetime(2025, 1, 1), datetime(2026, 1, 1))
+            for pattern in self.patterns
+        ]
+        delta = timedelta()
+        current = datetime(2025, 1, 1)
+        while self.value <= stop_value:
+            for pattern in self.patterns:
+                if pattern.scheduled(current):
+                    pattern.apply(self)
+            current += self.granularity.timedelta()
+            delta += self.granularity.timedelta()
+        return delta
 
     def iterate(self):
         self.iterations += 1
