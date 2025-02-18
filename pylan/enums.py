@@ -2,6 +2,8 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any
 
+from dateutil.relativedelta import relativedelta
+
 
 class Operators(Enum):
     add = 1
@@ -28,6 +30,7 @@ class Operators(Enum):
 
 
 class Granularity(Enum):
+    month = "monthly"
     second = "s"
     minute = "m"
     hour = "h"
@@ -36,7 +39,7 @@ class Granularity(Enum):
     year = "y"
 
     def __lt__(self, granularity):
-        return self.timedelta() < granularity.timedelta()
+        return self.rank < granularity.rank
 
     @staticmethod
     def from_str(value: str):
@@ -45,15 +48,34 @@ class Granularity(Enum):
                 return level
         raise Exception("Granularity can't be derived from schedule.")
 
+    @property
+    def rank(self) -> int:
+        if self == Granularity.second:
+            return 1
+        elif self == Granularity.minute:
+            return 2
+        elif self == Granularity.hour:
+            return 3
+        elif self == Granularity.day:
+            return 4
+        elif self == Granularity.week:
+            return 5
+        elif self == Granularity.month:
+            return 6
+        return 7
+
+    @property
     def timedelta(self) -> timedelta:
         if self == Granularity.second:
-            return timedelta(seconds=1)
+            return relativedelta(seconds=1)
         elif self == Granularity.minute:
-            return timedelta(minutes=1)
+            return relativedelta(minutes=1)
         elif self == Granularity.hour:
-            return timedelta(hour=1)
+            return relativedelta(hours=1)
         elif self == Granularity.day:
-            return timedelta(days=1)
+            return relativedelta(days=1)
         elif self == Granularity.week:
-            return timedelta(weeks=1)
-        return timedelta(year=1)
+            return relativedelta(weeks=1)
+        elif self == Granularity.month:
+            return relativedelta(months=1)
+        return relativedelta(years=1)

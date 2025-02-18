@@ -55,7 +55,7 @@ class Item:
             self.granularity = pattern_granularity
         self.patterns.append(pattern)
 
-    def run(self, start: datetime, end: datetime, interval: str = "1d") -> list:
+    def run(self, start: datetime, end: datetime) -> list:
         if not self.patterns:
             raise Exception("No patterns have been added.")
         [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
@@ -65,11 +65,11 @@ class Item:
             for pattern in self.patterns:
                 if pattern.scheduled(current):
                     pattern.apply(self)
-            current += self.granularity.timedelta()
+            current += self.granularity.timedelta
             result.add_result(current, self.value)
         return result
 
-    def until(self, stop_value: float) -> timedelta:  # NOTE: not funished!
+    def until(self, stop_value: float) -> timedelta:  # NOTE: not finished!
         if not self.patterns:
             raise Exception("No patterns have been added.")
         [
@@ -82,8 +82,8 @@ class Item:
             for pattern in self.patterns:
                 if pattern.scheduled(current):
                     pattern.apply(self)
-            current += self.granularity.timedelta()
-            delta += self.granularity.timedelta()
+            current += self.granularity.timedelta
+            delta += self.granularity.timedelta
         return delta
 
     def iterate(self):

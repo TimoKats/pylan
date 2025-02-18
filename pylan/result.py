@@ -8,6 +8,12 @@ class Result:
     schedule: Optional[list[datetime]] = field(default_factory=list)
     values: Optional[list[float]] = field(default_factory=list)
 
+    def __str__(self) -> str:
+        str_result = ""
+        for date, value in zip(self.schedule, self.values):
+            str_result += str(date) + "   " + str(value) + "\n"
+        return str_result
+
     def end(self):
         return self.values[-1:][0]
 
