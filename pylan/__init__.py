@@ -1,5 +1,5 @@
-from pylan.classes import *
-from pylan.utils import *
+from pylan.patterns import *  # noqa: F403
+from pylan.utils import *  # noqa: F403
 
 
 def test():

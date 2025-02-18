@@ -19,7 +19,7 @@ class Pattern:
     def set_dt_schedule(self, start: datetime, end: datetime) -> None:
         self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
 
-    def apply(self, item: Any) -> None:  # fix typing
+    def apply(self, item: Any) -> None:
         current_value = item.value
         item.value = self.operator.apply(current_value, self.impact)
 
@@ -28,9 +28,9 @@ class Pattern:
             raise Exception("Datetime schedule not set.")
         if self.iterations >= len(self.dt_schedule):
             return False
-        if current == self.dt_schedule[self.iterations]:  # NOTE: check for granularity!
-            self.iterations += 1  # NOTE: For example, daily granularity...
-            return True  #  ...only requires day to be equal
+        if current == self.dt_schedule[self.iterations]:
+            self.iterations += 1
+            return True
         return False
 
 
@@ -90,24 +90,3 @@ class Item:
         self.iterations += 1
         for pattern in self.patterns:
             pattern.apply(self)
-
-
-class Collection:
-    def __init__(self, n: int) -> None:
-        self.items = [Item() for _ in range(0, n)]
-        self.start_dt = datetime.now()
-        self.n = n
-
-    def __str__(self) -> str:
-        collection_str = ""
-        for item in self.items:
-            collection_str += str(item) + " "
-        return collection_str
-
-    def update(self, loc: int, item: Item) -> None:
-        if loc > self.n:
-            raise Exception("Location exceeds collection range.")
-        self.items[loc] = item
-
-    def add_pattern(self, pattern: Pattern) -> None:
-        return
