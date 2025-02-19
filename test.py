@@ -1,6 +1,5 @@
+# import matplotlib.pyplot as plt
 from datetime import datetime
-
-import matplotlib.pyplot as plt
 
 from pylan import Item, Operators, Pattern
 
@@ -19,12 +18,13 @@ if __name__ == "__main__":
     savings.add_pattern(test)
 
     result = savings.run(datetime(2024, 5, 1), datetime(2024, 7, 1))
-    print(result.end())
-    x, y = result.plot_axes(categorical_x_axis=True)
+    print(">>>", result.final)
 
-    print(result)
+    test = savings.until(1000)
 
-    # result.to_csv("test.csv")
+    print(">>>>>>> ", test, result.final)
 
-    plt.plot(x, y)
-    plt.show()
+    # x, y = result.plot_axes()
+
+    # plt.plot(x, y)
+    # plt.show()

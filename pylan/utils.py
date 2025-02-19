@@ -12,7 +12,7 @@ def timedelta_from_str(interval: str) -> timedelta:
     elif interval_type == "h":
         return timedelta(hours=count)
     elif interval_type == "m":
-        return timedelta(minutes=count)
+        return timedelta(minutes=count)  # NOTE: use relative timedelta and add months
     elif interval_type == "s":
         return timedelta(seconds=count)
     raise Exception("Inteval type " + interval_type + " not recognized.")

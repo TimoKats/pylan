@@ -40,6 +40,7 @@ class Item:
         self.patterns = []
         self.iterations = 0
         self.value = value
+        self.init_value = value  # to deal with multiple runs
         self.granularity = None
 
     def __str__(self) -> str:
@@ -56,6 +57,7 @@ class Item:
         self.patterns.append(pattern)
 
     def run(self, start: datetime, end: datetime) -> list:
+        self.value = self.init_value
         if not self.patterns:
             raise Exception("No patterns have been added.")
         [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
@@ -69,16 +71,15 @@ class Item:
             result.add_result(current, self.value)
         return result
 
-    def until(self, stop_value: float) -> timedelta:  # NOTE: not finished!
+    def until(self, stop_value: float) -> timedelta:
+        self.value = self.init_value
+        start = datetime(2025, 1, 1)
+        delta = timedelta()
+        current = start
         if not self.patterns:
             raise Exception("No patterns have been added.")
-        [
-            pattern.set_dt_schedule(datetime(2025, 1, 1), datetime(2026, 1, 1))
-            for pattern in self.patterns
-        ]
-        delta = timedelta()
-        current = datetime(2025, 1, 1)
         while self.value <= stop_value:
+            [pattern.set_dt_schedule(start, current) for pattern in self.patterns]
             for pattern in self.patterns:
                 if pattern.scheduled(current):
                     pattern.apply(self)

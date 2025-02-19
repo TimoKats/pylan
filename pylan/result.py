@@ -14,7 +14,8 @@ class Result:
             str_result += str(date) + "   " + str(value) + "\n"
         return str_result
 
-    def end(self):
+    @property
+    def final(self):
         return self.values[-1:][0]
 
     def plot_axes(self, categorical_x_axis: bool = False) -> tuple[list, list]:
