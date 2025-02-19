@@ -1,6 +1,7 @@
 import unittest
 from datetime import datetime
 
+from pylan import Item, Operators, Pattern
 from pylan.utils import timedelta_from_schedule
 
 
@@ -44,6 +45,26 @@ class TestTimeDelta(unittest.TestCase):
         self.assertEqual(
             [datetime(2025, 1, 5), datetime(2025, 4, 5)],
             timedelta_from_schedule([datetime(2025, 1, 5), datetime(2025, 4, 5)]),
+        )
+
+
+class TestPatterns(unittest.TestCase):
+    def test_basic_addition(self):
+        adds = Pattern("1d", Operators.add, 10)
+        start = Item(value=100)
+        start.add_pattern(adds)
+        self.assertAlmostEqual(
+            start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 190
+        )
+
+    def test_basic_multiplication(self):
+        adds = Pattern("1d", Operators.add, 10)
+        multiplies = Pattern("3d", Operators.multiply, 2)
+        start = Item(value=100)
+        start.add_pattern(adds)
+        start.add_pattern(multiplies)
+        self.assertAlmostEqual(
+            start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 1220
         )
 
 

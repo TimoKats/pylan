@@ -39,7 +39,7 @@ class Item:
         self.name = name
         self.patterns = []
         self.iterations = 0
-        self.value = value
+        self.value = value  # NOTE: rename the parameter to start_value
         self.init_value = value  # to deal with multiple runs
         self.granularity = None
 
