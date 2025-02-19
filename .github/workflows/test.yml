@@ -21,6 +21,8 @@ jobs:
 
     - name: Run tests
       run: |
+        ls
         cd ..
+        ls
         python test.py -v
 
