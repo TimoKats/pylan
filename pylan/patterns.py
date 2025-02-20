@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from pylan.enums import Granularity, Operators
 from pylan.result import Result
-from pylan.utils import timedelta_from_schedule
+from pylan.utils import keep_or_convert, timedelta_from_schedule
 
 
 @dataclass
@@ -35,12 +35,12 @@ class Pattern:
 
 
 class Item:
-    def __init__(self, name: str = "", value: int = 0) -> None:
+    def __init__(self, name: str = "", start_value: int = 0) -> None:
         self.name = name
         self.patterns = []
         self.iterations = 0
-        self.value = value  # NOTE: rename the parameter to start_value
-        self.init_value = value  # to deal with multiple runs
+        self.value = start_value
+        self.start_value = start_value  # to deal with multiple runs
         self.granularity = None
 
     def __str__(self) -> str:
@@ -56,23 +56,30 @@ class Item:
             self.granularity = pattern_granularity
         self.patterns.append(pattern)
 
-    def run(self, start: datetime, end: datetime) -> list:
-        self.value = self.init_value
+    def add_patterns(self, patterns: list[Pattern]) -> None:
+        for pattern in patterns:
+            self.add_pattern(pattern)
+
+    def run(self, start: datetime | str, end: datetime | str) -> list:
+        # all the setup
         if not self.patterns:
             raise Exception("No patterns have been added.")
+        start = keep_or_convert(start)
+        end = keep_or_convert(end)
         [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
-        result = Result()
-        current = start
-        while current <= end:
+        self.value = self.start_value
+        result = Result()  # NOTE: Make this a prop?
+        # run between start and end date
+        while start <= end:
             for pattern in self.patterns:
-                if pattern.scheduled(current):
+                if pattern.scheduled(start):
                     pattern.apply(self)
-            current += self.granularity.timedelta
-            result.add_result(current, self.value)
+            start += self.granularity.timedelta
+            result.add_result(start, self.value)
         return result
 
     def until(self, stop_value: float) -> timedelta:
-        self.value = self.init_value
+        self.value = self.start_value
         start = datetime(2025, 1, 1)
         delta = timedelta()
         current = start

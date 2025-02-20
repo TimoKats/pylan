@@ -51,7 +51,7 @@ class TestTimeDelta(unittest.TestCase):
 class TestPatterns(unittest.TestCase):
     def test_basic_addition(self):
         adds = Pattern("1d", Operators.add, 10)
-        start = Item(value=100)
+        start = Item(start_value=100)
         start.add_pattern(adds)
         self.assertAlmostEqual(
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 190
@@ -60,12 +60,17 @@ class TestPatterns(unittest.TestCase):
     def test_basic_multiplication(self):
         adds = Pattern("1d", Operators.add, 10)
         multiplies = Pattern("3d", Operators.multiply, 2)
-        start = Item(value=100)
+        start = Item(start_value=100)
         start.add_pattern(adds)
         start.add_pattern(multiplies)
         self.assertAlmostEqual(
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 1220
         )
+
+
+class TestItems(unittest.TestCase):
+    def test(self):
+        return
 
 
 if __name__ == "__main__":

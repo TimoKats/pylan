@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Any
 
+DATE_FORMAT = "%Y-%m-%d"
+
 
 def timedelta_from_str(interval: str) -> timedelta:
     count = int(interval[:-1])
@@ -73,3 +75,7 @@ def timedelta_from_schedule(
     ):
         return schedule
     raise Exception("Schedule format invalid.")
+
+
+def keep_or_convert(date: str) -> tuple[str, str]:
+    return datetime.strptime(date, DATE_FORMAT) if isinstance(date, str) else date
