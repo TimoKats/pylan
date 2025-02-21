@@ -1,37 +1,9 @@
-from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Optional
 
-from pylan.enums import Granularity, Operators
+from pylan.enums import Granularity
+from pylan.pattern import Pattern
 from pylan.result import Result
-from pylan.utils import keep_or_convert, timedelta_from_schedule
-
-
-@dataclass
-class Pattern:
-    schedule: str
-    operator: Operators
-    impact: Any
-
-    iterations: Optional[int] = 1
-    dt_schedule: Optional[list] = None
-
-    def set_dt_schedule(self, start: datetime, end: datetime) -> None:
-        self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
-
-    def apply(self, item: Any) -> None:
-        current_value = item.value
-        item.value = self.operator.apply(current_value, self.impact)
-
-    def scheduled(self, current: datetime) -> bool:
-        if not self.dt_schedule:
-            raise Exception("Datetime schedule not set.")
-        if self.iterations >= len(self.dt_schedule):
-            return False
-        if current == self.dt_schedule[self.iterations]:
-            self.iterations += 1
-            return True
-        return False
+from pylan.utils import keep_or_convert
 
 
 class Item:
@@ -68,14 +40,14 @@ class Item:
         end = keep_or_convert(end)
         [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
         self.value = self.start_value
-        result = Result()  # NOTE: Make this a prop?
+        result = Result()
         # run between start and end date
         while start <= end:
             for pattern in self.patterns:
                 if pattern.scheduled(start):
                     pattern.apply(self)
-            start += self.granularity.timedelta
             result.add_result(start, self.value)
+            start += self.granularity.timedelta
         return result
 
     def until(self, stop_value: float) -> timedelta:

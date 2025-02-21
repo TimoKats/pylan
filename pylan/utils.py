@@ -77,5 +77,5 @@ def timedelta_from_schedule(
     raise Exception("Schedule format invalid.")
 
 
-def keep_or_convert(date: str) -> tuple[str, str]:
+def keep_or_convert(date: str | datetime) -> datetime:
     return datetime.strptime(date, DATE_FORMAT) if isinstance(date, str) else date

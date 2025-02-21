@@ -53,8 +53,8 @@ class TestPatterns(unittest.TestCase):
         adds = Pattern("1d", Operators.add, 10)
         start = Item(start_value=100)
         start.add_pattern(adds)
-        self.assertAlmostEqual(
-            start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 190
+        self.assertEqual(
+            start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 200
         )
 
     def test_basic_multiplication(self):
@@ -63,14 +63,32 @@ class TestPatterns(unittest.TestCase):
         start = Item(start_value=100)
         start.add_pattern(adds)
         start.add_pattern(multiplies)
-        self.assertAlmostEqual(
-            start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 1220
+        self.assertEqual(
+            start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 2180
+        )
+
+    def test_pattern_manipulation(self):
+        adds = Pattern("1d", Operators.add, 10, start_date="2024-5-3")
+        start = Item(start_value=100)
+        start.add_patterns([adds])
+        self.assertEqual(
+            start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 180
         )
 
 
 class TestItems(unittest.TestCase):
-    def test(self):
-        return
+    def test_add_pattern(self):
+        adds = Pattern("1d", Operators.add, 10)
+        start = Item(start_value=100)
+        start.add_pattern(adds)
+        self.assertEqual(len(start.patterns), 1)
+
+    def test_add_patterns(self):
+        adds = Pattern("1d", Operators.add, 10)
+        test = Pattern("2d", Operators.add, 10)
+        start = Item(start_value=100)
+        start.add_patterns([adds, test])
+        self.assertEqual(len(start.patterns), 2)
 
 
 if __name__ == "__main__":
