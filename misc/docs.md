@@ -1,16 +1,14 @@
 
 
-Pylan is a Python library for simulating the impact of multiple patterns over time. For example, pylan can be used to simulate the impact of financial patterns, like investment gains, adding savings, and inflation.  
-
-To get started, you can install the Python library using PyPi with the following command:
+Pylan is a Python library for simulating the impact of multiple patterns over time. For example, pylan can be used to simulate the impact of financial patterns, like investment gains, adding savings, and inflation. To get started, you can install the Python library using PyPi with the following command:
 
 ```
 pip install pylan-lib
 ```
 
-This code snippet shows the different options available when doing simulations.
+This code snippet shows some basic functionality when doing simulations.
 
-```
+```python
 savings = Item(start_value=100)
 
 inflation = Pattern("6w", Operators.divide, 1.08)
