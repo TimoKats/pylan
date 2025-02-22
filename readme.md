@@ -20,7 +20,7 @@ To get started, you can install the Python library using PyPi with the following
 pip install pylan-lib
 ```
 
-This code snippet shows the different options available when doing simulations.
+This code snippet shows some functionalities available when doing simulations.
 
 ```python
 from pylan import Item, Operators, Pattern
