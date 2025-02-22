@@ -29,7 +29,7 @@ setup(
     version=os.environ["VERSION"],
     description="Python library for time based planning.",
     url="https://github.com/TimoKats/pylan",
-    long_description=read("readme.md"),
+    long_description=read("misc/docs.md"),
     long_description_content_type="text/markdown",
     author="Timo Kats",
     packages=find_packages(exclude=[".github"]),

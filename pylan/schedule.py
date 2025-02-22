@@ -40,7 +40,9 @@ def cron_schedule(cron_schedule, start: datetime, end: datetime):
 def timedelta_from_str(interval: str) -> timedelta:
     count = int(interval[:-1]) if interval != "month" else 1
     interval_type = interval[-1] if interval != "month" else "month"
-    if interval_type == "d":
+    if interval_type == "y":
+        return relativedelta(years=count)
+    elif interval_type == "d":
         return relativedelta(days=count)
     elif interval_type == "w":
         return relativedelta(weeks=count)

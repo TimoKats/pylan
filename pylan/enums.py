@@ -6,6 +6,12 @@ from dateutil.relativedelta import relativedelta
 
 
 class Operators(Enum):
+    """Refers to the supported operations a pattern object can have.
+
+    >>> Pattern("0 0 2 * *", Operators.add, 1)
+    >>> Pattern(["2d", "4d"], Operators.multiply, 0.1)
+    """
+
     add = 1
     subtract = 2
     multiply = 3
@@ -30,6 +36,8 @@ class Operators(Enum):
 
 
 class Granularity(Enum):
+    """Refers to the minimum step size needed for iterations given a set of patterns."""
+
     month = "month"
     second = "s"
     minute = "m"

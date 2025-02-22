@@ -1,8 +1,10 @@
-name: Publish
+name: Publish to test
 
 on:
-  release:
-    types: [published]
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+        - main
 
 jobs:
   publish:
@@ -19,7 +21,7 @@ jobs:
 
     - name: Set version from tag
       id: version
-      run: echo "VERSION=$(echo ${{ github.ref }} | sed 's|refs/tags/||')" >> $GITHUB_ENV
+      run: echo "VERSION=0.${{ github.event.number }}.$(date +%s)" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: |
@@ -29,8 +31,8 @@ jobs:
     - name: Build package
       run: python setup.py sdist bdist_wheel
 
-    - name: Publish package to PyPI
+    - name: Publish package to test PyPI
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: twine upload dist/*
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+      run: twine upload --repository testpypi --skip-existing dist/*
