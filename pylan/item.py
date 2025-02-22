@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from pylan.enums import Granularity
 from pylan.pattern import Pattern
 from pylan.result import Result
-from pylan.utils import keep_or_convert
+from pylan.schedule import keep_or_convert
 
 
 class Item:
@@ -29,8 +29,11 @@ class Item:
         self.patterns.append(pattern)
 
     def add_patterns(self, patterns: list[Pattern]) -> None:
-        for pattern in patterns:
-            self.add_pattern(pattern)
+        try:
+            for pattern in patterns:
+                self.add_pattern(pattern)
+        except TypeError:
+            raise Exception("parameter is not list, use add_pattern instead.")
 
     def run(self, start: datetime | str, end: datetime | str) -> list:
         # all the setup

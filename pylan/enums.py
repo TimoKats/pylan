@@ -30,7 +30,7 @@ class Operators(Enum):
 
 
 class Granularity(Enum):
-    month = "monthly"
+    month = "month"
     second = "s"
     minute = "m"
     hour = "h"
@@ -46,7 +46,7 @@ class Granularity(Enum):
         for level in Granularity:
             if level.value in value:
                 return level
-        raise Exception("Granularity can't be derived from schedule.")
+        return Granularity.day  # NOTE: cron, or set of datetimes
 
     @property
     def rank(self) -> int:
@@ -78,4 +78,4 @@ class Granularity(Enum):
             return relativedelta(weeks=1)
         elif self == Granularity.month:
             return relativedelta(months=1)
-        return relativedelta(years=1)
+        raise Exception("Granularity not found.")

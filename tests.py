@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 
 from pylan import Item, Operators, Pattern
-from pylan.utils import timedelta_from_schedule
+from pylan.schedule import timedelta_from_schedule
 
 
 class TestTimeDelta(unittest.TestCase):
@@ -36,15 +36,27 @@ class TestTimeDelta(unittest.TestCase):
                 datetime(2025, 3, 5, 0, 0),
                 datetime(2025, 4, 5, 0, 0),
             ],
-            timedelta_from_schedule(
-                "monthly", datetime(2025, 1, 5), datetime(2025, 4, 5)
-            ),
+            timedelta_from_schedule("month", datetime(2025, 1, 5), datetime(2025, 4, 5)),
         )
 
     def test_datetime_schedule(self):
         self.assertEqual(
             [datetime(2025, 1, 5), datetime(2025, 4, 5)],
             timedelta_from_schedule([datetime(2025, 1, 5), datetime(2025, 4, 5)]),
+        )
+
+    def test_datetime_schedule_in_str(self):
+        self.assertEqual(
+            timedelta_from_schedule(["2025-1-5", "2025-4-5"]),
+            timedelta_from_schedule([datetime(2025, 1, 5), datetime(2025, 4, 5)]),
+        )
+
+    def test_cron_schedule(self):
+        self.assertEqual(
+            timedelta_from_schedule(
+                "0 0 2 * *", datetime(2024, 1, 1), datetime(2024, 3, 1)
+            ),
+            timedelta_from_schedule([datetime(2024, 1, 2), datetime(2024, 2, 2)]),
         )
 
 
@@ -74,6 +86,13 @@ class TestPatterns(unittest.TestCase):
         self.assertEqual(
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 180
         )
+
+    def test_offset_start(self):
+        test = Pattern("month", Operators.add, 1, offset_start="month")
+        savings = Item(start_value=100)
+        savings.add_pattern(test)
+        savings.run("2024-1-1", "2024-2-1")
+        self.assertEqual(1, len(savings.patterns[0].dt_schedule))
 
 
 class TestItems(unittest.TestCase):
