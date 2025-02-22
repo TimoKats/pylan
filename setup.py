@@ -1,6 +1,8 @@
 """Python setup.py for pylan package"""
+
 import io
 import os
+
 from setuptools import find_packages, setup
 
 
@@ -24,12 +26,12 @@ def read_requirements(path):
 
 setup(
     name="pylan-lib",
-    version="0.0.1",
+    version=os.environ("VERSION"),
     description="Python library for time based planning.",
     url="https://github.com/TimoKats/pylan",
     long_description=read("readme.md"),
     long_description_content_type="text/markdown",
     author="Timo Kats",
     packages=find_packages(exclude=[".github"]),
-    install_requires=read_requirements("requirements.txt")
+    install_requires=read_requirements("requirements.txt"),
 )
