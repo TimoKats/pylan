@@ -3,5 +3,5 @@
 <!-- markdownlint-disable no-duplicate-header -->
 
 <div align="center">
-  <img src="https://github.com/TimoKats/pylan/blob/init/.github/logo.png" width="60%" alt="DeepSeek-V3" />
+  <img src="https://github.com/TimoKats/pylan/blob/main/.github/logo.png" width="60%" alt="pylan-logo" />
 </div>
