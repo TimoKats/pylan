@@ -21,7 +21,9 @@ jobs:
 
     - name: Set version from tag
       id: version
-      run: echo "VERSION=0.${{ github.event.number }}.${{ date + '%M' }}" >> $GITHUB_ENV
+      run: |
+        current_minute = $(date + '%M')
+        echo "VERSION=0.${{ github.event.number }}.${{ current_minute }}" >> $GITHUB_ENV
 
     - name: Install dependencies
       run: |
