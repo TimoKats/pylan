@@ -26,7 +26,7 @@ def read_requirements(path):
 
 setup(
     name="pylan-lib",
-    version=os.environ("VERSION"),
+    version=os.environ["VERSION"],
     description="Python library for time based planning.",
     url="https://github.com/TimoKats/pylan",
     long_description=read("readme.md"),
