@@ -10,7 +10,6 @@ Class for defining the patterns used in simulation. Can be applied to an item.
 >>> Pattern("2d", Operators.add, 10, offset_start="10d") # starts pattern 10 days later.
 ```
 
----
 ## Class: Item
 
 An item that you can apply patterns to and simulate over time.
@@ -19,7 +18,7 @@ An item that you can apply patterns to and simulate over time.
 >>> savings = Item(start_value=100)
 ```
 
-#### add_pattern(self, pattern: Pattern) -> None:
+#### Item.add_pattern(self, pattern: Pattern) -> None:
 
 Add a pattern object to this item.
 
@@ -29,7 +28,7 @@ Add a pattern object to this item.
 >>> savings.add_pattern(test)
 ```
 
-#### add_patterns(self, patterns: list[Pattern]) -> None:
+#### Item.add_patterns(self, patterns: list[Pattern]) -> None:
 
 Adds a list of patterns object to this item.
 
@@ -40,7 +39,7 @@ Adds a list of patterns object to this item.
 >>> savings.add_patterns([gains, adds])
 ```
 
-#### run(self, start: datetime | str, end: datetime | str) -> list:
+#### Item.run(self, start: datetime | str, end: datetime | str) -> list:
 
 Runs the provided patterns between the start and end date. Creates a result
 object with all the iterations per day/month/etc.
@@ -51,7 +50,7 @@ object with all the iterations per day/month/etc.
 >>> savings.run("2024-1-1", "2025-1-1")
 ```
 
-#### until(self, stop_value: float) -> timedelta:
+#### Item.until(self, stop_value: float) -> timedelta:
 
 Runs the provided patterns until a stop value is reached. Returns the timedelta
 needed to reach the stop value. NOTE: Don't use offset with a start date here.
@@ -62,7 +61,7 @@ needed to reach the stop value. NOTE: Don't use offset with a start date here.
 >>> savings.until(200)  # returns timedelta
 ```
 
-#### iterate(self) -> None:
+#### Item.iterate(self) -> None:
 
 Runs the provided patterns once.
 
@@ -72,7 +71,6 @@ Runs the provided patterns once.
 >>> savings.iterate()
 ```
 
----
 ## Class: Result
 
 Outputted by an item run. Result of a simulation between start and end date.
@@ -84,19 +82,18 @@ Outputted by an item run. Result of a simulation between start and end date.
 >>> result.to_csv("test.csv")
 ```
 
-#### final(self):
+#### Result.final(self):
 
 Returns the result on the last day of the simulation.
 
-#### plot_axes(self, categorical_x_axis: bool = False) -> tuple[list, list]:
+#### Result.plot_axes(self, categorical_x_axis: bool = False) -> tuple[list, list]:
 
 Returns x, y axes of the simulated run. X axis are dates and Y axis are values.
 
-#### to_csv(self, filename: str, sep: str = ";") -> None:
+#### Result.to_csv(self, filename: str, sep: str = ";") -> None:
 
 Exports the result to a csv file. Row oriented.
 
----
 ## Class: Operators
 
 Refers to the supported operations a pattern object can have.
@@ -106,9 +103,7 @@ Refers to the supported operations a pattern object can have.
 >>> Pattern(["2d", "4d"], Operators.multiply, 0.1)
 ```
 
----
 ## Class: Granularity
 
 Refers to the minimum step size needed for iterations given a set of patterns.
 
----

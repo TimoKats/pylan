@@ -1,6 +1,37 @@
 import ast
 import os
 
+introduction = """
+
+Pylan is a Python library for simulating the impact of multiple patterns over time. For example, pylan can be used to simulate the impact of financial patterns, like investment gains, adding savings, and inflation.  
+
+To get started, you can install the Python library using PyPi with the following command:
+
+```
+pip install pylan-lib
+```
+
+This code snippet shows the different options available when doing simulations.
+
+```
+savings = Item(start_value=100)
+
+inflation = Pattern("6w", Operators.divide, 1.08)
+salary_adds = Pattern("month", Operators.add, 2000, offset_start="15d")  # every month at the 15th
+investment_gains = Pattern("month", Operators.multiply, 1.1)
+mortgage = Pattern("0 0 2 * *", Operators.subtract, 1500)  # cron support
+
+savings.add_patterns([salary_adds, inflation, investment_gains, mortgage])
+
+result = savings.run("2024-1-1", "2025-1-1")
+x, y = result.plot_axes()
+
+plt.plot(x, y)
+plt.show()
+```
+
+"""
+
 
 def extract_docstring(node):
     """Extract docstring from a node, if available."""
@@ -66,15 +97,13 @@ def generate_markdown_doc_from_file(file_path, output_file):
                         method_params = find_line(file_path, "def " + method_node.name)
 
                         if method_docstring and "@private" not in method_docstring:
-                            f.write(f"#### {method_params}\n\n")
+                            f.write(f"#### {node.name}.{method_params}\n\n")
                             f.write(f"{method_docstring}\n\n")
-
-                f.write("---\n")
 
 
 def generate_docs_for_folder(folder_path, output_file):
     with open(output_file, "w") as f:
-        f.write("Pylan is a library for simulating numeric patterns over time series.\n")
+        f.write(introduction + "\n")
     for root, _, files in os.walk(folder_path):
         for file in files:
             if file.endswith(".py"):
