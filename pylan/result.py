@@ -5,7 +5,8 @@ from typing import Optional
 
 @dataclass
 class Result:
-    """Outputted by an item run. Result of a simulation between start and end date.
+    """@private
+    Outputted by an item run. Result of a simulation between start and end date.
 
     >>> result = savings.run("2024-1-1", "2024-3-1")
     >>> x, y = result.plot_axes() # can be used for matplotlib
@@ -34,6 +35,7 @@ class Result:
         return self.schedule, self.values
 
     def add_result(self, date: datetime, value: float) -> None:
+        """@private test test"""
         self.schedule.append(date)
         self.values.append(value)
 
