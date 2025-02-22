@@ -1,5 +1,4 @@
-# Pylan
-
+Pylan is a library for simulating numeric patterns over time series.
 ## Class: Pattern
 
 Class for defining the patterns used in simulation. Can be applied to an item.
@@ -11,8 +10,7 @@ Class for defining the patterns used in simulation. Can be applied to an item.
 >>> Pattern("2d", Operators.add, 10, offset_start="10d") # starts pattern 10 days later.
 ```
 
-Contains item class, which is what patterns are added to and runs the simulation.
-
+---
 ## Class: Item
 
 An item that you can apply patterns to and simulate over time.
@@ -21,7 +19,7 @@ An item that you can apply patterns to and simulate over time.
 >>> savings = Item(start_value=100)
 ```
 
-#### Method: add_pattern(self, pattern: Pattern) -> None:
+#### add_pattern(self, pattern: Pattern) -> None:
 
 Add a pattern object to this item.
 
@@ -31,7 +29,7 @@ Add a pattern object to this item.
 >>> savings.add_pattern(test)
 ```
 
-#### Method: add_patterns(self, patterns: list[Pattern]) -> None:
+#### add_patterns(self, patterns: list[Pattern]) -> None:
 
 Adds a list of patterns object to this item.
 
@@ -42,7 +40,7 @@ Adds a list of patterns object to this item.
 >>> savings.add_patterns([gains, adds])
 ```
 
-#### Method: run(self, start: datetime | str, end: datetime | str) -> list:
+#### run(self, start: datetime | str, end: datetime | str) -> list:
 
 Runs the provided patterns between the start and end date. Creates a result
 object with all the iterations per day/month/etc.
@@ -53,7 +51,7 @@ object with all the iterations per day/month/etc.
 >>> savings.run("2024-1-1", "2025-1-1")
 ```
 
-#### Method: until(self, stop_value: float) -> timedelta:
+#### until(self, stop_value: float) -> timedelta:
 
 Runs the provided patterns until a stop value is reached. Returns the timedelta
 needed to reach the stop value. NOTE: Don't use offset with a start date here.
@@ -64,7 +62,7 @@ needed to reach the stop value. NOTE: Don't use offset with a start date here.
 >>> savings.until(200)  # returns timedelta
 ```
 
-#### Method: iterate(self) -> None:
+#### iterate(self) -> None:
 
 Runs the provided patterns once.
 
@@ -74,9 +72,9 @@ Runs the provided patterns once.
 >>> savings.iterate()
 ```
 
+---
 ## Class: Result
 
-@private
 Outputted by an item run. Result of a simulation between start and end date.
 
 ```python
@@ -86,20 +84,19 @@ Outputted by an item run. Result of a simulation between start and end date.
 >>> result.to_csv("test.csv")
 ```
 
-#### Method: final(self):
+#### final(self):
 
 Returns the result on the last day of the simulation.
 
-#### Method: plot_axes(self, categorical_x_axis: bool = False) -> tuple[list, list]:
+#### plot_axes(self, categorical_x_axis: bool = False) -> tuple[list, list]:
 
 Returns x, y axes of the simulated run. X axis are dates and Y axis are values.
 
-#### Method: to_csv(self, filename: str, sep: str = ";") -> None:
+#### to_csv(self, filename: str, sep: str = ";") -> None:
 
 Exports the result to a csv file. Row oriented.
 
-Operators and Granularity enums
-
+---
 ## Class: Operators
 
 Refers to the supported operations a pattern object can have.
@@ -109,7 +106,9 @@ Refers to the supported operations a pattern object can have.
 >>> Pattern(["2d", "4d"], Operators.multiply, 0.1)
 ```
 
+---
 ## Class: Granularity
 
 Refers to the minimum step size needed for iterations given a set of patterns.
 
+---

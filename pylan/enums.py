@@ -1,5 +1,3 @@
-"""Operators and Granularity enums"""
-
 from datetime import timedelta
 from enum import Enum
 from typing import Any

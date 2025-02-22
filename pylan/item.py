@@ -1,5 +1,3 @@
-"""Contains item class, which is what patterns are added to and runs the simulation."""
-
 from datetime import datetime, timedelta
 
 from pylan.enums import Granularity

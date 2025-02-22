@@ -66,13 +66,15 @@ def generate_markdown_doc_from_file(file_path, output_file):
                         method_params = find_line(file_path, "def " + method_node.name)
 
                         if method_docstring and "@private" not in method_docstring:
-                            f.write(f"#### Method: {method_params}\n\n")
+                            f.write(f"#### {method_params}\n\n")
                             f.write(f"{method_docstring}\n\n")
+
+                f.write("---\n")
 
 
 def generate_docs_for_folder(folder_path, output_file):
     with open(output_file, "w") as f:
-        f.write("# Pylan\n\n")
+        f.write("Pylan is a library for simulating numeric patterns over time series.\n")
     for root, _, files in os.walk(folder_path):
         for file in files:
             if file.endswith(".py"):

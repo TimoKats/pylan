@@ -5,7 +5,7 @@ from typing import Optional
 
 @dataclass
 class Result:
-    """@private
+    """
     Outputted by an item run. Result of a simulation between start and end date.
 
     >>> result = savings.run("2024-1-1", "2024-3-1")
