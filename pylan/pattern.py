@@ -8,6 +8,14 @@ from pylan.schedule import keep_or_convert, timedelta_from_schedule, timedelta_f
 
 @dataclass
 class Pattern:
+    """Class for defining the patterns used in simulation. Can be applied to an item.
+
+    >>> Pattern("2d", Operators.add, 10) # adds 10 every day
+    >>> Pattern("montly", Operators.multiply, 1.06) # 6% inflation every month
+    >>> Pattern("0 0 2 * *", Operators.add, 10, start_date="2025-1-1") # cron schedule, hardcoded min date
+    >>> Pattern("2d", Operators.add, 10, offset_start="10d") # starts pattern 10 days later.
+    """
+
     schedule: str
     operator: Operators
     impact: Any
