@@ -11,7 +11,7 @@
 [![stars - pylan](https://img.shields.io/github/stars/TimoKats/pylan?style=social)](https://github.com/TimoKats/pylan)
 [![forks - pylan](https://img.shields.io/github/forks/TimoKats/pylan?style=social)](https://github.com/TimoKats/pylan) 
 
-Pylan is a Python library that simulates the impact of scheduled events over time. For example, it be used to simulate the impact of financial patterns, like investment gains, adding savings, and inflation.  
+Pylan is a Python library that simulates the combined impact of scheduled events over time. For example, it be used to simulate the impact of financial patterns, like investment gains, adding savings, and inflation.  
 
 ## Getting started
 
