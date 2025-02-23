@@ -8,10 +8,16 @@ DATE_FORMAT = "%Y-%m-%d"
 
 
 def keep_or_convert(date: str | datetime) -> datetime:
+    """@private
+    Accepts datetime or string and returns all as datetime.
+    """
     return datetime.strptime(date, DATE_FORMAT) if isinstance(date, str) else date
 
 
 def valid_dt(date: str | datetime) -> bool:
+    """@private
+    Returns true if string or datetime is valid datetime.
+    """
     try:
         keep_or_convert(date)
         return True
@@ -19,7 +25,10 @@ def valid_dt(date: str | datetime) -> bool:
         return False
 
 
-def valid_cron(cron_schedule):
+def valid_cron(cron_schedule: str) -> bool:
+    """@private
+    Returns true if string is a valid cron
+    """
     try:
         croniter(cron_schedule, datetime.now())
         return True
@@ -27,7 +36,10 @@ def valid_cron(cron_schedule):
         return False
 
 
-def cron_schedule(cron_schedule, start: datetime, end: datetime):
+def cron_schedule(cron_schedule, start: datetime, end: datetime) -> list[datetime]:
+    """@private
+    Iterates through cron schedule between a start and end date.
+    """
     iter = croniter(cron_schedule, start)
     dt_schedule = []
     current = iter.get_next(datetime)
@@ -38,6 +50,9 @@ def cron_schedule(cron_schedule, start: datetime, end: datetime):
 
 
 def timedelta_from_str(interval: str) -> timedelta:
+    """@private
+    Returns a timedelta object based on an interval string (like 2d, 3w, etc)
+    """
     count = int(interval[:-1]) if interval != "month" else 1
     interval_type = interval[-1] if interval != "month" else "month"
     if interval_type == "y":
@@ -58,6 +73,10 @@ def timedelta_from_str(interval: str) -> timedelta:
 
 
 def interval_schedule(start: datetime, end: datetime, interval: str) -> list[datetime]:
+    """@private
+    Based on the timedelta from string, return a list of datetime objects between start
+    and end.
+    """
     dt_schedule = []
     interval = timedelta_from_str(interval)
     current = start
@@ -70,6 +89,10 @@ def interval_schedule(start: datetime, end: datetime, interval: str) -> list[dat
 def alt_interval_schedule(
     start: datetime, end: datetime, interval: list[str]
 ) -> list[datetime]:
+    """@private
+    Based on a list with objects that have a timedelta from string, return a list of
+    datetime objects between start and end.
+    """
     interval_index = 0
     dt_schedule = []
     current = start
@@ -86,6 +109,10 @@ def alt_interval_schedule(
 def timedelta_from_schedule(
     schedule: Any, start: datetime = None, end: datetime = None
 ) -> list[datetime]:  # NOTE: entrypoint of this submodule
+    """@private
+    Entrypoint of this submodule. Takes a string with some datetime objects and returns
+    a list of datetime objects that represent the schedule.
+    """
     if valid_cron(schedule):
         return cron_schedule(schedule, start, end)
     elif isinstance(schedule, str):

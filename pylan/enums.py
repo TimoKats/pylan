@@ -6,7 +6,9 @@ from dateutil.relativedelta import relativedelta
 
 
 class Operators(Enum):
-    """Refers to the supported operations a pattern object can have.
+    """
+    Refers to the supported operations a pattern object can have. It's an enum class that
+    supports the following types: add, subtract, multiply, divide, replace, quadratic.
 
     >>> Pattern("0 0 2 * *", Operators.add, 1)
     >>> Pattern(["2d", "4d"], Operators.multiply, 0.1)
