@@ -1,6 +1,6 @@
 
 
-Pylan is a Python library that simulates the impact of scheduled events over time. In summary, you can apply scheduled patterns to items. To get started, you can install the Python library using PyPi with the following command:
+Pylan is a Python library that simulates the impact of scheduled events over time. To get started, you can install the Python library using PyPi with the following command:
 
 ```
 pip install pylan-lib
@@ -25,9 +25,9 @@ plt.plot(x, y)
 plt.show()
 ```
 
----
+There are three important classes in this library: Item, Pattern and Operator. In summary, patterns refer to scheduled events that you want to simulate. They all have an operator (like __add__ x, __multiply__ by x, etc.) and you add these patterns to an item (e.g. savings, investments, etc). Below is the documentation of these classes.
 
-There are three important classes in this library: Item, Pattern and Operator. In summary, patterns refer to scheduled events that you want to simulate. The all have an operator (like add something, multiply by x, etc.) and you add these patterns to an item (e.g. savings, investments, etc). Below is the documentation of these classes.
+---
 
 
 ## Class: Pattern
