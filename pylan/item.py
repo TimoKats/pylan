@@ -7,7 +7,9 @@ from pylan.schedule import keep_or_convert
 
 
 class Item:
-    """An item that you can apply patterns to and simulate over time.
+    """
+    An item that you can apply patterns to and simulate over time. Optionally, you can set
+    a start value and a name as parameters.
 
     >>> savings = Item(start_value=100)
     """
@@ -21,7 +23,8 @@ class Item:
         self.granularity = None
 
     def add_pattern(self, pattern: Pattern) -> None:
-        """Add a pattern object to this item.
+        """@public
+        Add a pattern object to this item.
 
         >>> test = Pattern(["2024-1-4", "2024-2-1"], Operators.add, 1)
         >>> savings = Item(start_value=100)
@@ -35,7 +38,8 @@ class Item:
         self.patterns.append(pattern)
 
     def add_patterns(self, patterns: list[Pattern]) -> None:
-        """Adds a list of patterns object to this item.
+        """@public
+        Adds a list of patterns object to this item.
 
         >>> gains = Pattern("month", Operators.multiply, 1)
         >>> adds = Pattern("2d", Operators.add, 1)
@@ -49,7 +53,8 @@ class Item:
             raise Exception("parameter is not list, use add_pattern instead.")
 
     def run(self, start: datetime | str, end: datetime | str) -> list:
-        """Runs the provided patterns between the start and end date. Creates a result
+        """@public
+        Runs the provided patterns between the start and end date. Creates a result
         object with all the iterations per day/month/etc.
 
         >>> savings = Item(start_value=100)
@@ -73,7 +78,8 @@ class Item:
         return result
 
     def until(self, stop_value: float) -> timedelta:
-        """Runs the provided patterns until a stop value is reached. Returns the timedelta
+        """@public
+        Runs the provided patterns until a stop value is reached. Returns the timedelta
         needed to reach the stop value. NOTE: Don't use offset with a start date here.
 
         >>> savings = Item(start_value=100)
@@ -94,14 +100,3 @@ class Item:
             current += self.granularity.timedelta
             delta += self.granularity.timedelta
         return delta
-
-    def iterate(self) -> None:
-        """Runs the provided patterns once.
-
-        >>> savings = Item(start_value=100)
-        >>> savings.add_patterns([gains, adds])
-        >>> savings.iterate()
-        """
-        self.iterations += 1
-        for pattern in self.patterns:
-            pattern.apply(self)
