@@ -23,7 +23,12 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - name: Linter check
+      uses: astral-sh/ruff-action@v3
+      with:
+        src: "./pylan"
+
+    - name: install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
