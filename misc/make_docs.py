@@ -34,9 +34,9 @@ There are 2 important classes in this library: Item and Pattern. A pattern is an
 """
 
 footer = """
+---
 
 ## Schedule
----
 
 Passed to patterns as a parameter. Accepts multiple formats.
 
