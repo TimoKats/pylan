@@ -87,8 +87,8 @@ class TestPatterns(unittest.TestCase):
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 180
         )
 
-    def test_offset_start(self):
-        test = Multiply("1m", 1, offset_start="1m")
+    def test_offset(self):
+        test = Multiply("1m", 1, offset="1m")
         savings = Item(start_value=100)
         savings.add_pattern(test)
         savings.run("2024-1-1", "2024-2-1")

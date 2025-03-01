@@ -14,9 +14,8 @@ class AddGrow(Pattern):
         grow_schedule: Any,
         grow_value: float | int,
         start_date: str | datetime = None,
-        offset_start: str = None,
+        offset: str = None,
         end_date: str | datetime = None,
-        offset_end: str = None,
     ) -> None:
         # for additions
         self.schedule = add_schedule
@@ -32,9 +31,8 @@ class AddGrow(Pattern):
 
         # basic stuff
         self.start_date = start_date
-        self.offset_start = offset_start
+        self.offset = offset
         self.end_date = end_date
-        self.offset_end = offset_end
 
     def set_dt_schedule(self, start: datetime, end: datetime) -> None:
         """@private
