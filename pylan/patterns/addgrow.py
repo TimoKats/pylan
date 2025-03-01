@@ -45,8 +45,6 @@ class AddGrow(Pattern):
         self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
         self.grow_dt_schedule = timedelta_from_schedule(self.grow_schedule, start, end)
 
-        print(self.dt_schedule, self.grow_dt_schedule, sep=" ---- ")
-
     def apply(self, item: Item) -> None:
         """@private
         Adds the pattern value to the item value.
