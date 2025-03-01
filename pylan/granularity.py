@@ -1,40 +1,7 @@
 from datetime import timedelta
 from enum import Enum
-from typing import Any
 
 from dateutil.relativedelta import relativedelta
-
-
-class Operators(Enum):
-    """
-    Refers to the supported operations a pattern object can have. It's an enum class that
-    supports the following types: add, subtract, multiply, divide, replace, quadratic.
-
-    >>> Pattern("0 0 2 * *", Operators.add, 1)
-    >>> Pattern(["2d", "4d"], Operators.multiply, 0.1)
-    """
-
-    add = 1
-    subtract = 2
-    multiply = 3
-    divide = 4
-    replace = 5
-    quad = 6
-
-    def apply(self, value: float, impact: float) -> Any:
-        if self == Operators.add:
-            return value + impact
-        elif self == Operators.subtract:
-            return value - impact
-        elif self == Operators.multiply:
-            return value * impact
-        elif self == Operators.divide:
-            return value / impact
-        elif self == Operators.replace:
-            return impact
-        elif self == Operators.quad:
-            return value**impact
-        raise Exception("Operator has no defined action.")
 
 
 class Granularity(Enum):

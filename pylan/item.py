@@ -1,21 +1,20 @@
 from datetime import datetime, timedelta
 
-from pylan.enums import Granularity
-from pylan.pattern import Pattern
+from pylan.granularity import Granularity
+from pylan.patterns import Pattern
 from pylan.result import Result
 from pylan.schedule import keep_or_convert
 
 
 class Item:
     """
-    An item that you can apply patterns to and simulate over time. Optionally, you can set
-    a start value and a name as parameters.
+    An item that you can apply patterns to and simulate over time. Optionally, you can
+    set a start value.
 
     >>> savings = Item(start_value=100)
     """
 
-    def __init__(self, name: str = "", start_value: int = 0) -> None:
-        self.name = name
+    def __init__(self, start_value: int = 0) -> None:
         self.patterns = []
         self.iterations = 0
         self.value = start_value
