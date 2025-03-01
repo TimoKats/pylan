@@ -1,8 +1,7 @@
 import unittest
 from datetime import datetime
 
-from pylan import Item
-from pylan.patterns.add import Add
+from pylan import Add, Item, Multiply
 from pylan.schedule import timedelta_from_schedule
 
 
@@ -61,10 +60,9 @@ class TestTimeDelta(unittest.TestCase):
         )
 
 
-"""
 class TestPatterns(unittest.TestCase):
     def test_basic_addition(self):
-        adds = Pattern("1d", Operators.add, 10)
+        adds = Add("1d", 10)
         start = Item(start_value=100)
         start.add_pattern(adds)
         self.assertEqual(
@@ -72,8 +70,8 @@ class TestPatterns(unittest.TestCase):
         )
 
     def test_basic_multiplication(self):
-        adds = Pattern("1d", Operators.add, 10)
-        multiplies = Pattern("3d", Operators.multiply, 2)
+        adds = Add("1d", 10)
+        multiplies = Multiply("3d", 2)
         start = Item(start_value=100)
         start.add_pattern(adds)
         start.add_pattern(multiplies)
@@ -82,7 +80,7 @@ class TestPatterns(unittest.TestCase):
         )
 
     def test_pattern_manipulation(self):
-        adds = Pattern("1d", Operators.add, 10, start_date="2024-5-3")
+        adds = Add("1d", 10, start_date="2024-5-3")
         start = Item(start_value=100)
         start.add_patterns([adds])
         self.assertEqual(
@@ -90,12 +88,11 @@ class TestPatterns(unittest.TestCase):
         )
 
     def test_offset_start(self):
-        test = Pattern("month", Operators.add, 1, offset_start="month")
+        test = Multiply("month", 1, offset_start="month")
         savings = Item(start_value=100)
         savings.add_pattern(test)
         savings.run("2024-1-1", "2024-2-1")
         self.assertEqual(1, len(savings.patterns[0].dt_schedule))
-"""
 
 
 class TestItems(unittest.TestCase):
