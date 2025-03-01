@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 
+from pylan.schedule import keep_or_convert
+
 
 @dataclass
 class Result:
@@ -19,13 +21,25 @@ class Result:
     values: Optional[list[float]] = field(default_factory=list)
 
     def __str__(self) -> str:
-        """@private
+        """@public
         String format of result is a column oriented table with dates and values.
         """
         str_result = ""
         for date, value in zip(self.schedule, self.values):
             str_result += str(date) + "   " + str(value) + "\n"
         return str_result
+
+    def __getitem__(self, key: str | datetime) -> float | int:
+        """@public
+        Get a result by the date using a dict key.
+
+        >>> print(result["2024-5-5"])
+        """
+        key = keep_or_convert(key)
+        for date, value in zip(self.schedule, self.values):
+            if date == key:
+                return value
+        raise Exception("Date not found in result.")
 
     @property
     def final(self):

@@ -11,13 +11,8 @@ class Pattern(ABC):
     - Subtract(schedule, value)
     - Multiply(schedule, value)
     - Divide(schedule, value)
-    - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
-        - *AddGrow adds a value that can be {de,in}creased over time based on another schedule.*
-
-    Note, all implementations have the following optional parameters: __start_date__ (str
-    or datetime with the minimum date for the pattern to start), __end_date__ (str or
-    datetime, max date for the pattern), __offset_start__ (str, offsets each occurence of
-    the pattern based on the start date).
+    - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value):
+      Adds a value that can be {de,in}creased over time based on another schedule.
 
     >>> dividends = AddGrow("90d", 100, "1y", 1.1)
     >>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d")

@@ -9,7 +9,6 @@ pip install pylan-lib
 This code snippet shows some basic functionality when doing simulations.
 
 ```python
-import matplotlib.pyplot as plt
 from pylan import AddGrow, Item, Subtract
 
 savings = Item(start_value=100)
@@ -22,8 +21,6 @@ result = savings.run("2024-1-1", "2028-1-1")
 
 x, y = result.plot_axes()
 
-plt.plot(x, y)
-plt.show()
 ```
 
 There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
@@ -101,6 +98,20 @@ schedule and values as attributes (which are both lists).
 >>> result.to_csv("test.csv")
 ```
 
+#### Result.__str__(self) -> str:
+
+
+String format of result is a column oriented table with dates and values.
+
+#### Result.__getitem__(self, key: str | datetime) -> float | int:
+
+
+Get a result by the date using a dict key.
+
+```python
+>>> print(result["2024-5-5"])
+```
+
 #### Result.final(self):
 
 
@@ -141,13 +152,8 @@ Pattern is an abstract base class with the following implementations:
 - Subtract(schedule, value)
 - Multiply(schedule, value)
 - Divide(schedule, value)
-- AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
-    - *AddGrow adds a value that can be {de,in}creased over time based on another schedule.*
-
-Note, all implementations have the following optional parameters: __start_date__ (str
-or datetime with the minimum date for the pattern to start), __end_date__ (str or
-datetime, max date for the pattern), __offset_start__ (str, offsets each occurence of
-the pattern based on the start date).
+- AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value):
+  Adds a value that can be {de,in}creased over time based on another schedule.
 
 ```python
 >>> dividends = AddGrow("90d", 100, "1y", 1.1)
@@ -168,11 +174,11 @@ specific classes.
 Returns true if pattern is scheduled on the provided date.
 
 
-
-## Schedule
 ---
 
-Passed to patterns as a parameter. Accepts multiple formats.
+## Schedule
+
+Passed to patterns as a parameter. Is converted to a list of datetime objects. Accepts multiple formats.
 
 #### Cron schedules
 For example, "0 0 2 * *" runs on the second day of each month.

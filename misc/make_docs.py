@@ -12,7 +12,6 @@ pip install pylan-lib
 This code snippet shows some basic functionality when doing simulations.
 
 ```python
-import matplotlib.pyplot as plt
 from pylan import AddGrow, Item, Subtract
 
 savings = Item(start_value=100)
@@ -25,8 +24,6 @@ result = savings.run("2024-1-1", "2028-1-1")
 
 x, y = result.plot_axes()
 
-plt.plot(x, y)
-plt.show()
 ```
 
 There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
@@ -38,7 +35,7 @@ footer = """
 
 ## Schedule
 
-Passed to patterns as a parameter. Accepts multiple formats.
+Passed to patterns as a parameter. Is converted to a list of datetime objects. Accepts multiple formats.
 
 #### Cron schedules
 For example, "0 0 2 * *" runs on the second day of each month.
