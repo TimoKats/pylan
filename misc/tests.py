@@ -36,7 +36,7 @@ class TestTimeDelta(unittest.TestCase):
                 datetime(2025, 3, 5, 0, 0),
                 datetime(2025, 4, 5, 0, 0),
             ],
-            timedelta_from_schedule("m", datetime(2025, 1, 5), datetime(2025, 4, 5)),
+            timedelta_from_schedule("1m", datetime(2025, 1, 5), datetime(2025, 4, 5)),
         )
 
     def test_datetime_schedule(self):
