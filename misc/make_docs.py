@@ -31,13 +31,12 @@ plt.show()
 
 There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
 
----
-
 """
 
 footer = """
 
 ## Schedule
+---
 
 Passed to patterns as a parameter. Accepts multiple formats.
 
@@ -114,7 +113,7 @@ def generate_markdown_doc_from_file(file_path, output_file):
                 if "@private" in class_docstring:
                     break
                 if class_docstring:
-                    f.write(f"## Class: {node.name}\n\n")
+                    f.write(f"\n---\n## Class: {node.name}\n\n")
                     f.write(f"{class_docstring}\n\n")
 
                 # Iterate over methods in the class

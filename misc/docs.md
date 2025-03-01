@@ -28,9 +28,9 @@ plt.show()
 
 There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
 
+
+
 ---
-
-
 ## Class: Item
 
 An item that you can apply patterns to and simulate over time. Optionally, you can
@@ -87,6 +87,8 @@ needed to reach the stop value. NOTE: Don't use offset with a start date here.
 >>> savings.until(200)  # returns timedelta
 ```
 
+
+---
 ## Class: Result
 
 Outputted by an item run. Result of a simulation between start and end date. Has the
@@ -129,6 +131,8 @@ Exports the result to a csv file. Row oriented.
 >>> result.to_csv("test.csv")
 ```
 
+
+---
 ## Class: Pattern
 
 
@@ -166,6 +170,7 @@ Returns true if pattern is scheduled on the provided date.
 
 
 ## Schedule
+---
 
 Passed to patterns as a parameter. Accepts multiple formats.
 
