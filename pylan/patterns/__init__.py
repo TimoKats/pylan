@@ -14,8 +14,13 @@ class Pattern(ABC):
     - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value):
       Adds a value that can be {de,in}creased over time based on another schedule.
 
+    Note, all implementations have the following optional parameters:
+    - __start_date__: str or datetime with the minimum date for the pattern to start
+    - __end_date__: str or datetime, max date for the pattern
+    - __offset__: str, offsets each occurence of the pattern based on the start date
+
     >>> dividends = AddGrow("90d", 100, "1y", 1.1)
-    >>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d")
+    >>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d")
     >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
     >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
     """
@@ -43,8 +48,8 @@ class Pattern(ABC):
         """
         if self.start_date and keep_or_convert(self.start_date) > date:
             date = keep_or_convert(self.start_date)
-        elif self.offset_start:
-            date += timedelta_from_str(self.offset_start)
+        elif self.offset:
+            date += timedelta_from_str(self.offset)
         return date
 
     def _apply_end_date_settings(self, date: datetime) -> datetime:
@@ -53,8 +58,6 @@ class Pattern(ABC):
         """
         if self.end_date and keep_or_convert(self.end_date) < date:
             date = keep_or_convert(self.end_date)
-        elif self.offset_end:
-            date -= timedelta_from_str(self.offset_end)
         return date
 
     def scheduled(self, current: datetime) -> bool:

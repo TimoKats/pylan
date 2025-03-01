@@ -11,9 +11,8 @@ class Multiply(Pattern):
         schedule: Any,
         value: float | int,
         start_date: str | datetime = None,
-        offset_start: str = None,
+        offset: str = None,
         end_date: str | datetime = None,
-        offset_end: str = None,
     ) -> None:
         self.schedule = schedule
         self.value = value
@@ -21,9 +20,8 @@ class Multiply(Pattern):
         self.dt_schedule = []
 
         self.start_date = start_date
-        self.offset_start = offset_start
+        self.offset = offset
         self.end_date = end_date
-        self.offset_end = offset_end
 
     def apply(self, item: Item) -> None:
         """@private

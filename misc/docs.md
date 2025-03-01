@@ -13,7 +13,7 @@ from pylan import AddGrow, Item, Subtract
 
 savings = Item(start_value=100)
 dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
-growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d") # every month 24th
+growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d") # every month 24th
 mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
 savings.add_patterns([growing_salary, dividends, mortgage])
@@ -155,9 +155,14 @@ Pattern is an abstract base class with the following implementations:
 - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value):
   Adds a value that can be {de,in}creased over time based on another schedule.
 
+Note, all implementations have the following optional parameters:
+- __start_date__: str or datetime with the minimum date for the pattern to start
+- __end_date__: str or datetime, max date for the pattern
+- __offset__: str, offsets each occurence of the pattern based on the start date
+
 ```python
 >>> dividends = AddGrow("90d", 100, "1y", 1.1)
->>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d")
+>>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d")
 >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
 ```
