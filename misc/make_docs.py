@@ -15,8 +15,8 @@ This code snippet shows some basic functionality when doing simulations.
 savings = Item(start_value=100)
 
 inflation = Pattern("6w", Operators.divide, 1.08)
-salary_adds = Pattern("month", Operators.add, 2000, offset_start="15d")  # every month at the 15th
-investment_gains = Pattern("month", Operators.multiply, 1.1)
+salary_adds = Pattern("m", Operators.add, 2000, offset_start="15d")  # every m at the 15th
+investment_gains = Pattern("m", Operators.multiply, 1.1)
 mortgage = Pattern("0 0 2 * *", Operators.subtract, 1500)  # cron support
 
 savings.add_patterns([salary_adds, inflation, investment_gains, mortgage])

@@ -50,7 +50,7 @@ class Pattern(ABC):
             raise Exception("Datetime schedule not set.")
         if self.iterations >= len(self.dt_schedule):
             return False
-        if current == self.dt_schedule[self.iterations]:
+        if current >= self.dt_schedule[self.iterations]:
             self.iterations += 1
             return True
         return False

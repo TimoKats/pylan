@@ -28,7 +28,7 @@ class TestTimeDelta(unittest.TestCase):
             ),
         )
 
-    def test_monthly_schedule(self):
+    def test_mly_schedule(self):
         self.assertEqual(
             [
                 datetime(2025, 1, 5, 0, 0),
@@ -36,7 +36,7 @@ class TestTimeDelta(unittest.TestCase):
                 datetime(2025, 3, 5, 0, 0),
                 datetime(2025, 4, 5, 0, 0),
             ],
-            timedelta_from_schedule("month", datetime(2025, 1, 5), datetime(2025, 4, 5)),
+            timedelta_from_schedule("m", datetime(2025, 1, 5), datetime(2025, 4, 5)),
         )
 
     def test_datetime_schedule(self):
@@ -88,7 +88,7 @@ class TestPatterns(unittest.TestCase):
         )
 
     def test_offset_start(self):
-        test = Multiply("month", 1, offset_start="month")
+        test = Multiply("m", 1, offset_start="m")
         savings = Item(start_value=100)
         savings.add_pattern(test)
         savings.run("2024-1-1", "2024-2-1")

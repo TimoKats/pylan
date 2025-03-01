@@ -40,7 +40,7 @@ class Item:
         """@public
         Adds a list of patterns object to this item.
 
-        >>> gains = Pattern("month", Operators.multiply, 1)
+        >>> gains = Pattern("m", Operators.multiply, 1)
         >>> adds = Pattern("2d", Operators.add, 1)
         >>> savings = Item(start_value=100)
         >>> savings.add_patterns([gains, adds])

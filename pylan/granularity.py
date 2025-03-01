@@ -7,12 +7,10 @@ from dateutil.relativedelta import relativedelta
 class Granularity(Enum):
     """Refers to the minimum step size needed for iterations given a set of patterns."""
 
-    month = "month"
-    second = "s"
-    minute = "m"
     hour = "h"
     day = "d"
     week = "w"
+    month = "m"
     year = "y"
 
     def __lt__(self, granularity):
@@ -27,11 +25,7 @@ class Granularity(Enum):
 
     @property
     def rank(self) -> int:
-        if self == Granularity.second:
-            return 1
-        elif self == Granularity.minute:
-            return 2
-        elif self == Granularity.hour:
+        if self == Granularity.hour:
             return 3
         elif self == Granularity.day:
             return 4
@@ -43,11 +37,7 @@ class Granularity(Enum):
 
     @property
     def timedelta(self) -> timedelta:
-        if self == Granularity.second:
-            return relativedelta(seconds=1)
-        elif self == Granularity.minute:
-            return relativedelta(minutes=1)
-        elif self == Granularity.hour:
+        if self == Granularity.hour:
             return relativedelta(hours=1)
         elif self == Granularity.day:
             return relativedelta(days=1)

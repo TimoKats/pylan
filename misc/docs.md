@@ -12,8 +12,8 @@ This code snippet shows some basic functionality when doing simulations.
 savings = Item(start_value=100)
 
 inflation = Pattern("6w", Operators.divide, 1.08)
-salary_adds = Pattern("month", Operators.add, 2000, offset_start="15d")  # every month at the 15th
-investment_gains = Pattern("month", Operators.multiply, 1.1)
+salary_adds = Pattern("m", Operators.add, 2000, offset_start="15d")  # every m at the 15th
+investment_gains = Pattern("m", Operators.multiply, 1.1)
 mortgage = Pattern("0 0 2 * *", Operators.subtract, 1500)  # cron support
 
 savings.add_patterns([salary_adds, inflation, investment_gains, mortgage])
@@ -25,38 +25,19 @@ plt.plot(x, y)
 plt.show()
 ```
 
-There are three important classes in this library: Item, Pattern and Operator. In summary, patterns refer to scheduled events that you want to simulate. They all have an operator (like __add__ x, __multiply__ by x, etc.) and you add these patterns to an item (e.g. savings, investments, etc). Below is the documentation of these classes.
+There are three important classes in this library: Item, Pattern and Operator. In summary, patterns refer to scheduled events that you want to simulate. The all have an operator (like add something, multiply by x, etc.) and you add these patterns to an item (e.g. savings, investments, etc). Below is the documentation of these classes.
 
 ---
 
 
-## Class: Pattern
+## Class: Granularity
 
-Class for defining the patterns used in simulation. Can be applied to an item. Allows
-the following parameters: schedule, operator, impact (all mandetory), start_date
-offset_start, end_date, offset_end (all optional).
-
-```python
->>> Pattern("2d", Operators.add, 10) # adds 10 every day
->>> Pattern(["2d", "3d"], Operators.multiply, 1.06) # irregular patterns through lists
->>> Pattern("0 0 2 * *", Operators.add, 10, start_date="2025-1-1") # cron schedule, hardcoded min date
->>> Pattern("2d", Operators.add, 10, offset_start="10d") # starts pattern 10 days later.
-```
-
-#### Pattern.apply(self, item: Any) -> None:
-
-
-Applies the pattern to the item provided as a parameter.
-
-#### Pattern.scheduled(self, current: datetime) -> bool:
-
-
-Returns true if pattern is scheduled on the provided date.
+Refers to the minimum step size needed for iterations given a set of patterns.
 
 ## Class: Item
 
-An item that you can apply patterns to and simulate over time. Optionally, you can set
-a start value and a name as parameters.
+An item that you can apply patterns to and simulate over time. Optionally, you can
+set a start value.
 
 ```python
 >>> savings = Item(start_value=100)
@@ -79,7 +60,7 @@ Add a pattern object to this item.
 Adds a list of patterns object to this item.
 
 ```python
->>> gains = Pattern("month", Operators.multiply, 1)
+>>> gains = Pattern("m", Operators.multiply, 1)
 >>> adds = Pattern("2d", Operators.add, 1)
 >>> savings = Item(start_value=100)
 >>> savings.add_patterns([gains, adds])
@@ -89,7 +70,7 @@ Adds a list of patterns object to this item.
 
 
 Runs the provided patterns between the start and end date. Creates a result
-object with all the iterations per day/month/etc.
+object with all the iterations per day/m/etc.
 
 ```python
 >>> savings = Item(start_value=100)
@@ -151,17 +132,14 @@ Exports the result to a csv file. Row oriented.
 >>> result.to_csv("test.csv")
 ```
 
-## Class: Operators
+#### Pattern.apply(self) -> None:
 
-Refers to the supported operations a pattern object can have. It's an enum class that
-supports the following types: add, subtract, multiply, divide, replace, quadratic.
 
-```python
->>> Pattern("0 0 2 * *", Operators.add, 1)
->>> Pattern(["2d", "4d"], Operators.multiply, 0.1)
-```
+Applies the pattern to the item provided as a parameter. Implemented in the
+specific classes.
 
-## Class: Granularity
+#### Pattern.scheduled(self, current: datetime) -> bool:
 
-Refers to the minimum step size needed for iterations given a set of patterns.
+
+Returns true if pattern is scheduled on the provided date.
 
