@@ -3,7 +3,7 @@ import os
 
 introduction = """
 
-Pylan is a Python library that simulates the impact of scheduled events over time. To get started, you can install the Python library using PyPi with the following command:
+Pylan is a Python library that simulates the impact of scheduled events over time. You can install the Python library using PyPi with the following command:
 
 ```
 pip install pylan-lib
@@ -13,7 +13,6 @@ This code snippet shows some basic functionality when doing simulations.
 
 ```python
 import matplotlib.pyplot as plt
-
 from pylan import AddGrow, Item, Subtract
 
 savings = Item(start_value=100)
@@ -30,9 +29,31 @@ plt.plot(x, y)
 plt.show()
 ```
 
-There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). Finally, the Item is something that patterns can be added to, like a savings account.
+There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
 
 ---
+
+"""
+
+footer = """
+
+## Schedule
+
+Passed to patterns as a parameter. Accepts multiple formats.
+
+#### Cron schedules
+For example, "0 0 2 * *" runs on the second day of each month.
+
+#### Timedelta strings
+Combination of a count and timedelta. For example, 2d (every 2 days) 3m (every 3 months). Currently supports: years (y), months (m), weeks (w), days (d).
+
+#### Timedelta lists
+Same as timedelta, but then alternates between the schedules. For example, ["2d", "5d"] will be triggered after 2 days, then after 5 days, then after 2 days, etc...
+
+#### Datetime lists
+A list of datetime objects or str that resemble datetime objects. For example, ["2024-1-1", "2025-1-1"].
+
+> **_NOTE:_**  The date format in pylan is yyyy-mm-dd. Currently this is not configurable.
 
 """
 
@@ -116,6 +137,8 @@ def generate_docs_for_folder(folder_path, output_file):
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
                 generate_markdown_doc_from_file(file_path, output_file)
+    with open(output_file, "a") as f:
+        f.write(footer + "\n")
 
 
 # Example usage

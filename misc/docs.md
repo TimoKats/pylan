@@ -1,6 +1,6 @@
 
 
-Pylan is a Python library that simulates the impact of scheduled events over time. To get started, you can install the Python library using PyPi with the following command:
+Pylan is a Python library that simulates the impact of scheduled events over time. You can install the Python library using PyPi with the following command:
 
 ```
 pip install pylan-lib
@@ -10,7 +10,6 @@ This code snippet shows some basic functionality when doing simulations.
 
 ```python
 import matplotlib.pyplot as plt
-
 from pylan import AddGrow, Item, Subtract
 
 savings = Item(start_value=100)
@@ -27,7 +26,7 @@ plt.plot(x, y)
 plt.show()
 ```
 
-There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). Finally, the Item is something that patterns can be added to, like a savings account.
+There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
 
 ---
 
@@ -134,12 +133,12 @@ Exports the result to a csv file. Row oriented.
 
 
 Pattern is an abstract base class with the following implementations:
-    - Add(schedule, value to add)
-    - Subtract(schedule, value to subtract)
-    - Multiply(schedule, value to multiply with)
-    - Divide(schedule, value to divide by)
-    - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
-        - AddGrow adds a value that can be increased over time based on another schedule.
+- Add(schedule, value)
+- Subtract(schedule, value)
+- Multiply(schedule, value)
+- Divide(schedule, value)
+- AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
+    - *AddGrow adds a value that can be {de,in}creased over time based on another schedule.*
 
 Note, all implementations have the following optional parameters: __start_date__ (str
 or datetime with the minimum date for the pattern to start), __end_date__ (str or
@@ -163,4 +162,25 @@ specific classes.
 
 
 Returns true if pattern is scheduled on the provided date.
+
+
+
+## Schedule
+
+Passed to patterns as a parameter. Accepts multiple formats.
+
+#### Cron schedules
+For example, "0 0 2 * *" runs on the second day of each month.
+
+#### Timedelta strings
+Combination of a count and timedelta. For example, 2d (every 2 days) 3m (every 3 months). Currently supports: years (y), months (m), weeks (w), days (d).
+
+#### Timedelta lists
+Same as timedelta, but then alternates between the schedules. For example, ["2d", "5d"] will be triggered after 2 days, then after 5 days, then after 2 days, etc...
+
+#### Datetime lists
+A list of datetime objects or str that resemble datetime objects. For example, ["2024-1-1", "2025-1-1"].
+
+> **_NOTE:_**  The date format in pylan is yyyy-mm-dd. Currently this is not configurable.
+
 

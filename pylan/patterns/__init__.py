@@ -7,12 +7,12 @@ from pylan.schedule import keep_or_convert, timedelta_from_schedule, timedelta_f
 class Pattern(ABC):
     """@public
     Pattern is an abstract base class with the following implementations:
-        - Add(schedule, value to add)
-        - Subtract(schedule, value to subtract)
-        - Multiply(schedule, value to multiply with)
-        - Divide(schedule, value to divide by)
-        - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
-            - AddGrow adds a value that can be increased over time based on another schedule.
+    - Add(schedule, value)
+    - Subtract(schedule, value)
+    - Multiply(schedule, value)
+    - Divide(schedule, value)
+    - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
+        - *AddGrow adds a value that can be {de,in}creased over time based on another schedule.*
 
     Note, all implementations have the following optional parameters: __start_date__ (str
     or datetime with the minimum date for the pattern to start), __end_date__ (str or
