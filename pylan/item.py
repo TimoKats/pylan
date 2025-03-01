@@ -25,7 +25,7 @@ class Item:
         """@public
         Add a pattern object to this item.
 
-        >>> test = Pattern(["2024-1-4", "2024-2-1"], Operators.add, 1)
+        >>> test = Add(["2024-1-4", "2024-2-1"], 1)
         >>> savings = Item(start_value=100)
         >>> savings.add_pattern(test)
         """
@@ -40,8 +40,8 @@ class Item:
         """@public
         Adds a list of patterns object to this item.
 
-        >>> gains = Pattern("m", Operators.multiply, 1)
-        >>> adds = Pattern("2d", Operators.add, 1)
+        >>> gains = Multiply("4m", 1)
+        >>> adds = Multiply("2d", 1)
         >>> savings = Item(start_value=100)
         >>> savings.add_patterns([gains, adds])
         """

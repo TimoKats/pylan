@@ -9,30 +9,28 @@ pip install pylan-lib
 This code snippet shows some basic functionality when doing simulations.
 
 ```python
+import matplotlib.pyplot as plt
+
+from pylan import AddGrow, Item, Subtract
+
 savings = Item(start_value=100)
+dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
+growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d") # every month 24th
+mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-inflation = Pattern("6w", Operators.divide, 1.08)
-salary_adds = Pattern("m", Operators.add, 2000, offset_start="15d")  # every m at the 15th
-investment_gains = Pattern("m", Operators.multiply, 1.1)
-mortgage = Pattern("0 0 2 * *", Operators.subtract, 1500)  # cron support
+savings.add_patterns([growing_salary, dividends, mortgage])
+result = savings.run("2024-1-1", "2028-1-1")
 
-savings.add_patterns([salary_adds, inflation, investment_gains, mortgage])
-
-result = savings.run("2024-1-1", "2025-1-1")
 x, y = result.plot_axes()
 
 plt.plot(x, y)
 plt.show()
 ```
 
-There are three important classes in this library: Item, Pattern and Operator. In summary, patterns refer to scheduled events that you want to simulate. The all have an operator (like add something, multiply by x, etc.) and you add these patterns to an item (e.g. savings, investments, etc). Below is the documentation of these classes.
+There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). Finally, the Item is something that patterns can be added to, like a savings account.
 
 ---
 
-
-## Class: Granularity
-
-Refers to the minimum step size needed for iterations given a set of patterns.
 
 ## Class: Item
 
@@ -49,7 +47,7 @@ set a start value.
 Add a pattern object to this item.
 
 ```python
->>> test = Pattern(["2024-1-4", "2024-2-1"], Operators.add, 1)
+>>> test = Add(["2024-1-4", "2024-2-1"], 1)
 >>> savings = Item(start_value=100)
 >>> savings.add_pattern(test)
 ```
@@ -60,8 +58,8 @@ Add a pattern object to this item.
 Adds a list of patterns object to this item.
 
 ```python
->>> gains = Pattern("m", Operators.multiply, 1)
->>> adds = Pattern("2d", Operators.add, 1)
+>>> gains = Multiply("4m", 1)
+>>> adds = Multiply("2d", 1)
 >>> savings = Item(start_value=100)
 >>> savings.add_patterns([gains, adds])
 ```
@@ -70,7 +68,7 @@ Adds a list of patterns object to this item.
 
 
 Runs the provided patterns between the start and end date. Creates a result
-object with all the iterations per day/m/etc.
+object with all the iterations per day/month/etc.
 
 ```python
 >>> savings = Item(start_value=100)
@@ -130,6 +128,29 @@ Exports the result to a csv file. Row oriented.
 ```python
 >>> result = savings.run("2024-1-1", "2024-3-1")
 >>> result.to_csv("test.csv")
+```
+
+## Class: Pattern
+
+
+Pattern is an abstract base class with the following implementations:
+    - Add(schedule, value to add)
+    - Subtract(schedule, value to subtract)
+    - Multiply(schedule, value to multiply with)
+    - Divide(schedule, value to divide by)
+    - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
+        - AddGrow adds a value that can be increased over time based on another schedule.
+
+Note, all implementations have the following optional parameters: __start_date__ (str
+or datetime with the minimum date for the pattern to start), __end_date__ (str or
+datetime, max date for the pattern), __offset_start__ (str, offsets each occurence of
+the pattern based on the start date).
+
+```python
+>>> dividends = AddGrow("90d", 100, "1y", 1.1)
+>>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d")
+>>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
+>>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
 ```
 
 #### Pattern.apply(self) -> None:

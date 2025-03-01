@@ -5,7 +5,9 @@ from dateutil.relativedelta import relativedelta
 
 
 class Granularity(Enum):
-    """Refers to the minimum step size needed for iterations given a set of patterns."""
+    """@private
+    Refers to the minimum step size needed for iterations given a set of patterns.
+    """
 
     hour = "h"
     day = "d"

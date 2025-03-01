@@ -5,6 +5,26 @@ from pylan.schedule import keep_or_convert, timedelta_from_schedule, timedelta_f
 
 
 class Pattern(ABC):
+    """@public
+    Pattern is an abstract base class with the following implementations:
+        - Add(schedule, value to add)
+        - Subtract(schedule, value to subtract)
+        - Multiply(schedule, value to multiply with)
+        - Divide(schedule, value to divide by)
+        - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
+            - AddGrow adds a value that can be increased over time based on another schedule.
+
+    Note, all implementations have the following optional parameters: __start_date__ (str
+    or datetime with the minimum date for the pattern to start), __end_date__ (str or
+    datetime, max date for the pattern), __offset_start__ (str, offsets each occurence of
+    the pattern based on the start date).
+
+    >>> dividends = AddGrow("90d", 100, "1y", 1.1)
+    >>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d")
+    >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
+    >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
+    """
+
     @abstractmethod
     def apply(self) -> None:
         """@public

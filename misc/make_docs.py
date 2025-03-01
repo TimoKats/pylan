@@ -12,23 +12,25 @@ pip install pylan-lib
 This code snippet shows some basic functionality when doing simulations.
 
 ```python
+import matplotlib.pyplot as plt
+
+from pylan import AddGrow, Item, Subtract
+
 savings = Item(start_value=100)
+dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
+growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d") # every month 24th
+mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-inflation = Pattern("6w", Operators.divide, 1.08)
-salary_adds = Pattern("m", Operators.add, 2000, offset_start="15d")  # every m at the 15th
-investment_gains = Pattern("m", Operators.multiply, 1.1)
-mortgage = Pattern("0 0 2 * *", Operators.subtract, 1500)  # cron support
+savings.add_patterns([growing_salary, dividends, mortgage])
+result = savings.run("2024-1-1", "2028-1-1")
 
-savings.add_patterns([salary_adds, inflation, investment_gains, mortgage])
-
-result = savings.run("2024-1-1", "2025-1-1")
 x, y = result.plot_axes()
 
 plt.plot(x, y)
 plt.show()
 ```
 
-There are three important classes in this library: Item, Pattern and Operator. In summary, patterns refer to scheduled events that you want to simulate. The all have an operator (like add something, multiply by x, etc.) and you add these patterns to an item (e.g. savings, investments, etc). Below is the documentation of these classes.
+There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). Finally, the Item is something that patterns can be added to, like a savings account.
 
 ---
 
@@ -88,6 +90,8 @@ def generate_markdown_doc_from_file(file_path, output_file):
             if isinstance(node, ast.ClassDef):
                 class_docstring = extract_docstring(node)
                 class_docstring = convert_code_lines_to_block(class_docstring)
+                if "@private" in class_docstring:
+                    break
                 if class_docstring:
                     f.write(f"## Class: {node.name}\n\n")
                     f.write(f"{class_docstring}\n\n")
