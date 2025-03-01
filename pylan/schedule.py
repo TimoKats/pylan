@@ -53,22 +53,21 @@ def timedelta_from_str(interval: str) -> timedelta:
     """@private
     Returns a timedelta object based on an interval string (like 2d, 3w, etc)
     """
-    count = int(interval[:-1]) if interval != "month" else 1
-    interval_type = interval[-1] if interval != "month" else "month"
+    try:
+        count = int(interval[:-1])  # error handle here for value error.
+        interval_type = interval[-1]
+    except ValueError:
+        raise Exception("Schedule doesn't adhere to format. E.g. 1d, 2y.")
     if interval_type == "y":
         return relativedelta(years=count)
-    elif interval_type == "d":
-        return relativedelta(days=count)
+    elif interval_type == "m":
+        return relativedelta(months=count)
     elif interval_type == "w":
         return relativedelta(weeks=count)
+    elif interval_type == "d":
+        return relativedelta(days=count)
     elif interval_type == "h":
         return relativedelta(hours=count)
-    elif interval_type == "m":
-        return relativedelta(minutes=count)
-    elif interval_type == "s":
-        return relativedelta(seconds=count)
-    elif interval_type == "month":
-        return relativedelta(months=1)
     raise Exception("Inteval type " + interval_type + " not recognized.")
 
 

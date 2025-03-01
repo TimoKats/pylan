@@ -1,34 +1,37 @@
-from dataclasses import dataclass
+from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Optional
 
-from pylan.enums import Operators
 from pylan.schedule import keep_or_convert, timedelta_from_schedule, timedelta_from_str
 
 
-@dataclass
-class Pattern:
+class Pattern(ABC):
+    """@public
+    Pattern is an abstract base class with the following implementations:
+    - Add(schedule, value)
+    - Subtract(schedule, value)
+    - Multiply(schedule, value)
+    - Divide(schedule, value)
+    - AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
+        - *AddGrow adds a value that can be {de,in}creased over time based on another schedule.*
+
+    Note, all implementations have the following optional parameters: __start_date__ (str
+    or datetime with the minimum date for the pattern to start), __end_date__ (str or
+    datetime, max date for the pattern), __offset_start__ (str, offsets each occurence of
+    the pattern based on the start date).
+
+    >>> dividends = AddGrow("90d", 100, "1y", 1.1)
+    >>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d")
+    >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
+    >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
     """
-    Class for defining the patterns used in simulation. Can be applied to an item. Allows
-    the following parameters: schedule, operator, impact (all mandetory), start_date
-    offset_start, end_date, offset_end (all optional).
 
-    >>> Pattern("2d", Operators.add, 10) # adds 10 every day
-    >>> Pattern(["2d", "3d"], Operators.multiply, 1.06) # irregular patterns through lists
-    >>> Pattern("0 0 2 * *", Operators.add, 10, start_date="2025-1-1") # cron schedule, hardcoded min date
-    >>> Pattern("2d", Operators.add, 10, offset_start="10d") # starts pattern 10 days later.
-    """
-
-    schedule: Any
-    operator: Operators
-    impact: Any
-
-    start_date: Optional[datetime | str] = None
-    end_date: Optional[datetime | str] = None
-    offset_start: Optional[str] = None
-    offset_end: Optional[str] = None
-    iterations: Optional[int] = 0
-    dt_schedule: Optional[list] = None
+    @abstractmethod
+    def apply(self) -> None:
+        """@public
+        Applies the pattern to the item provided as a parameter. Implemented in the
+        specific classes.
+        """
+        pass
 
     def set_dt_schedule(self, start: datetime, end: datetime) -> None:
         """@private
@@ -59,13 +62,6 @@ class Pattern:
             date -= timedelta_from_str(self.offset_end)
         return date
 
-    def apply(self, item: Any) -> None:
-        """@public
-        Applies the pattern to the item provided as a parameter.
-        """
-        current_value = item.value
-        item.value = self.operator.apply(current_value, self.impact)
-
     def scheduled(self, current: datetime) -> bool:
         """@public
         Returns true if pattern is scheduled on the provided date.
@@ -74,7 +70,7 @@ class Pattern:
             raise Exception("Datetime schedule not set.")
         if self.iterations >= len(self.dt_schedule):
             return False
-        if current == self.dt_schedule[self.iterations]:
+        if current >= self.dt_schedule[self.iterations]:
             self.iterations += 1
             return True
         return False

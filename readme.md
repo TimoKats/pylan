@@ -11,7 +11,7 @@
 [![stars - pylan](https://img.shields.io/github/stars/TimoKats/pylan?style=social)](https://github.com/TimoKats/pylan)
 [![forks - pylan](https://img.shields.io/github/forks/TimoKats/pylan?style=social)](https://github.com/TimoKats/pylan) 
 
-Pylan is a Python library that simulates the combined impact of scheduled events over time. For example, it be used to simulate the impact of financial patterns, like investment gains, adding savings, and inflation.  
+Pylan is a Python library that simulates the combined impact of scheduled events over time. For example, it be used to simulate the impact of financial patterns, like investment gains, savings, and inflation.  
 
 ## Getting started
 
@@ -24,18 +24,18 @@ pip install pylan-lib
 This code snippet shows some functionalities available when doing simulations. For more information, please see the documentation on [pypi](https://pypi.org/project/pylan-lib/).
 
 ```python
-from pylan import Item, Operators, Pattern
+import matplotlib.pyplot as plt
+
+from pylan import AddGrow, Item, Subtract
 
 savings = Item(start_value=100)
+dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
+growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d") # every month 24th
+mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-inflation = Pattern("6w", Operators.divide, 1.08)
-salary_adds = Pattern("month", Operators.add, 2000, offset_start="15d")  # every month at the 15th
-investment_gains = Pattern(["2024-4-1", "2024-7-1"], Operators.multiply, 1.1) # irregular patterns
-mortgage = Pattern("0 0 2 * *", Operators.subtract, 1500)  # cron support
+savings.add_patterns([growing_salary, dividends, mortgage])
+result = savings.run("2024-1-1", "2028-1-1")
 
-savings.add_patterns([salary_adds, inflation, investment_gains, mortgage])
-
-result = savings.run("2024-1-1", "2025-1-1")
 x, y = result.plot_axes()
 
 plt.plot(x, y)

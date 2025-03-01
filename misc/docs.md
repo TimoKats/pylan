@@ -1,6 +1,6 @@
 
 
-Pylan is a Python library that simulates the impact of scheduled events over time. To get started, you can install the Python library using PyPi with the following command:
+Pylan is a Python library that simulates the impact of scheduled events over time. You can install the Python library using PyPi with the following command:
 
 ```
 pip install pylan-lib
@@ -9,54 +9,32 @@ pip install pylan-lib
 This code snippet shows some basic functionality when doing simulations.
 
 ```python
+import matplotlib.pyplot as plt
+from pylan import AddGrow, Item, Subtract
+
 savings = Item(start_value=100)
+dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
+growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d") # every month 24th
+mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-inflation = Pattern("6w", Operators.divide, 1.08)
-salary_adds = Pattern("month", Operators.add, 2000, offset_start="15d")  # every month at the 15th
-investment_gains = Pattern("month", Operators.multiply, 1.1)
-mortgage = Pattern("0 0 2 * *", Operators.subtract, 1500)  # cron support
+savings.add_patterns([growing_salary, dividends, mortgage])
+result = savings.run("2024-1-1", "2028-1-1")
 
-savings.add_patterns([salary_adds, inflation, investment_gains, mortgage])
-
-result = savings.run("2024-1-1", "2025-1-1")
 x, y = result.plot_axes()
 
 plt.plot(x, y)
 plt.show()
 ```
 
-There are three important classes in this library: Item, Pattern and Operator. In summary, patterns refer to scheduled events that you want to simulate. They all have an operator (like __add__ x, __multiply__ by x, etc.) and you add these patterns to an item (e.g. savings, investments, etc). Below is the documentation of these classes.
+There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
+
+
 
 ---
-
-
-## Class: Pattern
-
-Class for defining the patterns used in simulation. Can be applied to an item. Allows
-the following parameters: schedule, operator, impact (all mandetory), start_date
-offset_start, end_date, offset_end (all optional).
-
-```python
->>> Pattern("2d", Operators.add, 10) # adds 10 every day
->>> Pattern(["2d", "3d"], Operators.multiply, 1.06) # irregular patterns through lists
->>> Pattern("0 0 2 * *", Operators.add, 10, start_date="2025-1-1") # cron schedule, hardcoded min date
->>> Pattern("2d", Operators.add, 10, offset_start="10d") # starts pattern 10 days later.
-```
-
-#### Pattern.apply(self, item: Any) -> None:
-
-
-Applies the pattern to the item provided as a parameter.
-
-#### Pattern.scheduled(self, current: datetime) -> bool:
-
-
-Returns true if pattern is scheduled on the provided date.
-
 ## Class: Item
 
-An item that you can apply patterns to and simulate over time. Optionally, you can set
-a start value and a name as parameters.
+An item that you can apply patterns to and simulate over time. Optionally, you can
+set a start value.
 
 ```python
 >>> savings = Item(start_value=100)
@@ -68,7 +46,7 @@ a start value and a name as parameters.
 Add a pattern object to this item.
 
 ```python
->>> test = Pattern(["2024-1-4", "2024-2-1"], Operators.add, 1)
+>>> test = Add(["2024-1-4", "2024-2-1"], 1)
 >>> savings = Item(start_value=100)
 >>> savings.add_pattern(test)
 ```
@@ -79,8 +57,8 @@ Add a pattern object to this item.
 Adds a list of patterns object to this item.
 
 ```python
->>> gains = Pattern("month", Operators.multiply, 1)
->>> adds = Pattern("2d", Operators.add, 1)
+>>> gains = Multiply("4m", 1)
+>>> adds = Multiply("2d", 1)
 >>> savings = Item(start_value=100)
 >>> savings.add_patterns([gains, adds])
 ```
@@ -109,6 +87,8 @@ needed to reach the stop value. NOTE: Don't use offset with a start date here.
 >>> savings.until(200)  # returns timedelta
 ```
 
+
+---
 ## Class: Result
 
 Outputted by an item run. Result of a simulation between start and end date. Has the
@@ -151,17 +131,61 @@ Exports the result to a csv file. Row oriented.
 >>> result.to_csv("test.csv")
 ```
 
-## Class: Operators
 
-Refers to the supported operations a pattern object can have. It's an enum class that
-supports the following types: add, subtract, multiply, divide, replace, quadratic.
+---
+## Class: Pattern
+
+
+Pattern is an abstract base class with the following implementations:
+- Add(schedule, value)
+- Subtract(schedule, value)
+- Multiply(schedule, value)
+- Divide(schedule, value)
+- AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value)
+    - *AddGrow adds a value that can be {de,in}creased over time based on another schedule.*
+
+Note, all implementations have the following optional parameters: __start_date__ (str
+or datetime with the minimum date for the pattern to start), __end_date__ (str or
+datetime, max date for the pattern), __offset_start__ (str, offsets each occurence of
+the pattern based on the start date).
 
 ```python
->>> Pattern("0 0 2 * *", Operators.add, 1)
->>> Pattern(["2d", "4d"], Operators.multiply, 0.1)
+>>> dividends = AddGrow("90d", 100, "1y", 1.1)
+>>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset_start="24d")
+>>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
+>>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
 ```
 
-## Class: Granularity
+#### Pattern.apply(self) -> None:
 
-Refers to the minimum step size needed for iterations given a set of patterns.
+
+Applies the pattern to the item provided as a parameter. Implemented in the
+specific classes.
+
+#### Pattern.scheduled(self, current: datetime) -> bool:
+
+
+Returns true if pattern is scheduled on the provided date.
+
+
+
+## Schedule
+---
+
+Passed to patterns as a parameter. Accepts multiple formats.
+
+#### Cron schedules
+For example, "0 0 2 * *" runs on the second day of each month.
+
+#### Timedelta strings
+Combination of a count and timedelta. For example, 2d (every 2 days) 3m (every 3 months). Currently supports: years (y), months (m), weeks (w), days (d).
+
+#### Timedelta lists
+Same as timedelta, but then alternates between the schedules. For example, ["2d", "5d"] will be triggered after 2 days, then after 5 days, then after 2 days, etc...
+
+#### Datetime lists
+A list of datetime objects or str that resemble datetime objects. For example, ["2024-1-1", "2025-1-1"].
+
+> **_NOTE:_**  The date format in pylan is yyyy-mm-dd. Currently this is not configurable.
+
 

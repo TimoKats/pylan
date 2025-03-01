@@ -1,21 +1,20 @@
 from datetime import datetime, timedelta
 
-from pylan.enums import Granularity
-from pylan.pattern import Pattern
+from pylan.granularity import Granularity
+from pylan.patterns import Pattern
 from pylan.result import Result
 from pylan.schedule import keep_or_convert
 
 
 class Item:
     """
-    An item that you can apply patterns to and simulate over time. Optionally, you can set
-    a start value and a name as parameters.
+    An item that you can apply patterns to and simulate over time. Optionally, you can
+    set a start value.
 
     >>> savings = Item(start_value=100)
     """
 
-    def __init__(self, name: str = "", start_value: int = 0) -> None:
-        self.name = name
+    def __init__(self, start_value: int = 0) -> None:
         self.patterns = []
         self.iterations = 0
         self.value = start_value
@@ -26,7 +25,7 @@ class Item:
         """@public
         Add a pattern object to this item.
 
-        >>> test = Pattern(["2024-1-4", "2024-2-1"], Operators.add, 1)
+        >>> test = Add(["2024-1-4", "2024-2-1"], 1)
         >>> savings = Item(start_value=100)
         >>> savings.add_pattern(test)
         """
@@ -41,8 +40,8 @@ class Item:
         """@public
         Adds a list of patterns object to this item.
 
-        >>> gains = Pattern("month", Operators.multiply, 1)
-        >>> adds = Pattern("2d", Operators.add, 1)
+        >>> gains = Multiply("4m", 1)
+        >>> adds = Multiply("2d", 1)
         >>> savings = Item(start_value=100)
         >>> savings.add_patterns([gains, adds])
         """

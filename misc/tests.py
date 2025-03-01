@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 
-from pylan import Item, Operators, Pattern
+from pylan import Add, Item, Multiply
 from pylan.schedule import timedelta_from_schedule
 
 
@@ -28,7 +28,7 @@ class TestTimeDelta(unittest.TestCase):
             ),
         )
 
-    def test_monthly_schedule(self):
+    def test_mly_schedule(self):
         self.assertEqual(
             [
                 datetime(2025, 1, 5, 0, 0),
@@ -36,7 +36,7 @@ class TestTimeDelta(unittest.TestCase):
                 datetime(2025, 3, 5, 0, 0),
                 datetime(2025, 4, 5, 0, 0),
             ],
-            timedelta_from_schedule("month", datetime(2025, 1, 5), datetime(2025, 4, 5)),
+            timedelta_from_schedule("1m", datetime(2025, 1, 5), datetime(2025, 4, 5)),
         )
 
     def test_datetime_schedule(self):
@@ -62,7 +62,7 @@ class TestTimeDelta(unittest.TestCase):
 
 class TestPatterns(unittest.TestCase):
     def test_basic_addition(self):
-        adds = Pattern("1d", Operators.add, 10)
+        adds = Add("1d", 10)
         start = Item(start_value=100)
         start.add_pattern(adds)
         self.assertEqual(
@@ -70,8 +70,8 @@ class TestPatterns(unittest.TestCase):
         )
 
     def test_basic_multiplication(self):
-        adds = Pattern("1d", Operators.add, 10)
-        multiplies = Pattern("3d", Operators.multiply, 2)
+        adds = Add("1d", 10)
+        multiplies = Multiply("3d", 2)
         start = Item(start_value=100)
         start.add_pattern(adds)
         start.add_pattern(multiplies)
@@ -80,7 +80,7 @@ class TestPatterns(unittest.TestCase):
         )
 
     def test_pattern_manipulation(self):
-        adds = Pattern("1d", Operators.add, 10, start_date="2024-5-3")
+        adds = Add("1d", 10, start_date="2024-5-3")
         start = Item(start_value=100)
         start.add_patterns([adds])
         self.assertEqual(
@@ -88,7 +88,7 @@ class TestPatterns(unittest.TestCase):
         )
 
     def test_offset_start(self):
-        test = Pattern("month", Operators.add, 1, offset_start="month")
+        test = Multiply("1m", 1, offset_start="1m")
         savings = Item(start_value=100)
         savings.add_pattern(test)
         savings.run("2024-1-1", "2024-2-1")
@@ -97,14 +97,14 @@ class TestPatterns(unittest.TestCase):
 
 class TestItems(unittest.TestCase):
     def test_add_pattern(self):
-        adds = Pattern("1d", Operators.add, 10)
+        adds = Add("1d", 10)
         start = Item(start_value=100)
         start.add_pattern(adds)
         self.assertEqual(len(start.patterns), 1)
 
     def test_add_patterns(self):
-        adds = Pattern("1d", Operators.add, 10)
-        test = Pattern("2d", Operators.add, 10)
+        adds = Add("1d", 10)
+        test = Add("2d", 10)
         start = Item(start_value=100)
         start.add_patterns([adds, test])
         self.assertEqual(len(start.patterns), 2)
