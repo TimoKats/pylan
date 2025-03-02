@@ -5,7 +5,7 @@
 
 ## About
 
-[![Tests](https://github.com/TimoKats/pylan/actions/workflows/test.yml/badge.svg)](https://github.com/TimoKats/pylan/actions/workflows/test.yml) 
+[![Tests](https://github.com/TimoKats/pylan/actions/workflows/unit_test.yml/badge.svg)](https://github.com/TimoKats/pylan/actions/workflows/unit_test.yml) 
 [![GitHub tag](https://img.shields.io/github/tag/TimoKats/pylan?include_prereleases=&sort=semver&color=blue)](https://github.com/TimoKats/pylan/releases/)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![stars - pylan](https://img.shields.io/github/stars/TimoKats/pylan?style=social)](https://github.com/TimoKats/pylan)
