@@ -88,7 +88,7 @@ class Item:
         self.value = self.start_value
         start = datetime(2025, 1, 1)
         delta = timedelta()
-        current = start
+        current = start + timedelta(days=365)
         if not self.patterns:
             raise Exception("No patterns have been added.")
         while self.value <= stop_value:
