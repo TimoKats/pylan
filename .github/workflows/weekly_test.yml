@@ -1,4 +1,4 @@
-name: Weekly smoke tests
+name: Smoke tests
 
 on:
   schedule:
