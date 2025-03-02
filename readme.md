@@ -26,11 +26,11 @@ This code snippet shows some functionalities available when doing simulations. F
 ```python
 import matplotlib.pyplot as plt
 
-from pylan import AddGrow, Item, Subtract
+from pylan import AddGrow, Item, Subtract, Add
 
 savings = Item(start_value=100)
-dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
-growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d") # every month 24th
+dividends = Add("90d", 100) # Dividend payout every 90 days.
+growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d") # Salary grows each year 20%
 mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
 savings.add_patterns([growing_salary, dividends, mortgage])
