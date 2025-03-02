@@ -1,4 +1,4 @@
-name: Test
+name: Unit tests
 
 on:
   pull_request:
@@ -28,11 +28,11 @@ jobs:
       with:
         src: "./pylan"
 
-    - name: install dependencies
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        mv misc/tests.py tests.py
+        mv misc/unit_tests.py tests.py
 
     - name: Run tests
       run: |
