@@ -1,6 +1,6 @@
 
 <div align="center">
-  <img src="https://github.com/TimoKats/pylan/blob/main/.github/logo.png" width="60%" alt="pylan-logo" />
+  <img src=".github/logo.png" width="60%" alt="pylan-logo" />
 </div>
 
 ## About
