@@ -40,7 +40,7 @@ def cron_schedule(cron_schedule, start: datetime, end: datetime) -> list[datetim
     """@private
     Iterates through cron schedule between a start and end date.
     """
-    iter = croniter(cron_schedule, start)
+    iter = croniter(cron_schedule, start)  # NOTE: remove this library!
     dt_schedule = []
     current = iter.get_next(datetime)
     while current <= end:
