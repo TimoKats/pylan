@@ -17,8 +17,8 @@ class Item:
     def __init__(self, start_value: int = 0) -> None:
         self.patterns = []
         self.iterations = 0
-        self.value = start_value
-        self.start_value = start_value  # to deal with multiple runs
+        self.value = start_value if start_value else 0
+        self.start_value = start_value if start_value else 0
         self.granularity = None
 
     def add_pattern(self, pattern: Pattern) -> None:
