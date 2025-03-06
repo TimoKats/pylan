@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any
 
-from croniter import croniter
+from cron_converter import Cron
 from dateutil.relativedelta import relativedelta
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -30,9 +30,9 @@ def valid_cron(cron_schedule: str) -> bool:
     Returns true if string is a valid cron
     """
     try:
-        croniter(cron_schedule, datetime.now())
+        Cron(cron_schedule)
         return True
-    except (ValueError, AttributeError):
+    except (ValueError, AttributeError, TypeError):
         return False
 
 
@@ -40,12 +40,11 @@ def cron_schedule(cron_schedule, start: datetime, end: datetime) -> list[datetim
     """@private
     Iterates through cron schedule between a start and end date.
     """
-    iter = croniter(cron_schedule, start)  # NOTE: remove this library!
+    cron = Cron(cron_schedule)
+    schedule = cron.schedule(start)
     dt_schedule = []
-    current = iter.get_next(datetime)
-    while current <= end:
-        dt_schedule.append(current)
-        current = iter.get_next(datetime)
+    while schedule.next() < end:
+        dt_schedule.append(schedule.date)
     return dt_schedule
 
 

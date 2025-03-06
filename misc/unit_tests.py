@@ -59,6 +59,16 @@ class TestTimeDelta(unittest.TestCase):
             timedelta_from_schedule([datetime(2024, 1, 2), datetime(2024, 2, 2)]),
         )
 
+    def test_cron_schedule_more(self):
+        self.assertEqual(
+            timedelta_from_schedule(
+                "0 0 2 */1 *", datetime(2024, 1, 1), datetime(2024, 4, 1)
+            ),
+            timedelta_from_schedule(
+                [datetime(2024, 1, 2), datetime(2024, 2, 2), datetime(2024, 3, 2)]
+            ),
+        )
+
 
 class TestPatterns(unittest.TestCase):
     def test_basic_addition(self):
