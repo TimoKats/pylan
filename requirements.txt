@@ -1,2 +1,2 @@
 python-dateutil
-croniter
+cron-converter
