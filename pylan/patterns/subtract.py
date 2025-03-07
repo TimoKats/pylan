@@ -18,6 +18,7 @@ class Subtract(Pattern):
         self.value = value
         self.iterations = 0
         self.dt_schedule = []
+        self.patterns = []
 
         self.start_date = start_date
         self.offset = offset
