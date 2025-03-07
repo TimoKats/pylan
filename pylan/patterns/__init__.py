@@ -38,6 +38,7 @@ class Pattern(ABC):
         Iterates between start and end date and returns sets the list of datetimes that
         the pattern is scheduled.
         """
+        self.iterations = 0
         start = self._apply_start_date_settings(start)
         end = self._apply_end_date_settings(end)
         self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)

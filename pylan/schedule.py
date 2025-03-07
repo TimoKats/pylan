@@ -53,9 +53,9 @@ def timedelta_from_str(interval: str) -> timedelta:
     Returns a timedelta object based on an interval string (like 2d, 3w, etc)
     """
     try:
-        count = int(interval[:-1])  # error handle here for value error.
+        count = int(interval[:-1])
         interval_type = interval[-1]
-    except ValueError:
+    except (ValueError, TypeError):
         raise Exception("Schedule doesn't adhere to format. E.g. 1d, 2y.")
     if interval_type == "y":
         return relativedelta(years=count)

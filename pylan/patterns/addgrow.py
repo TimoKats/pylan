@@ -38,6 +38,8 @@ class AddGrow(Pattern):
         """@private
         Overrules base class by also adding the schedule for the growth component.
         """
+        self.iterations = 0
+        self.grow_iterations = 0
         start = self._apply_start_date_settings(start)
         end = self._apply_end_date_settings(end)
         self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
