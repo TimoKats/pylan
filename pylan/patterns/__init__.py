@@ -29,9 +29,11 @@ class Pattern(ABC):
         start_date: str | datetime = None,
         end_date: str | datetime = None,
         offset: str = None,
+        include_start: bool = False,
     ) -> None:
         self.schedule = schedule
         self.value = value
+        self.include_start = include_start
         self.iterations = 0
         self.dt_schedule = []
         self.patterns = []
@@ -91,7 +93,9 @@ class Pattern(ABC):
         """
         start, end = self.__apply_date_settings(start, end)
         self.value = self.__backup_value
-        self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
+        self.dt_schedule = timedelta_from_schedule(
+            self.schedule, start, end, self.include_start
+        )
         self.iterations = 0
         [pattern.setup(start, end) for pattern in self.patterns]
 
@@ -103,8 +107,8 @@ class Pattern(ABC):
         """
         if self.start_date and keep_or_convert(self.start_date) > start:
             start = keep_or_convert(self.start_date)
-        elif self.offset:
-            start += timedelta_from_str(self.offset)
         if self.end_date and keep_or_convert(self.end_date) < end:
             end = keep_or_convert(self.end_date)
+        if self.offset:
+            start += timedelta_from_str(self.offset)
         return start, end

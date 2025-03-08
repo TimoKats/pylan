@@ -6,9 +6,7 @@
             "source.organizeImports": "explicit"
         }
     },
-    "ruff.lineLength": 89,
+    "ruff.lineLength": 90,
     "editor.formatOnSave": true,
-    "editor.rulers": [
-        89
-    ]
+    "editor.rulers": [90]
 }
