@@ -22,6 +22,26 @@ class Pattern(ABC):
     >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
     """
 
+    def __init__(
+        self,
+        schedule: Any,
+        value: float | int,
+        start_date: str | datetime = None,
+        end_date: str | datetime = None,
+        offset: str = None,
+    ) -> None:
+        self.schedule = schedule
+        self.value = value
+        self.iterations = 0
+        self.dt_schedule = []
+        self.patterns = []
+
+        self.start_date = start_date
+        self.offset = offset
+        self.end_date = end_date
+
+        self.__backup_value = value
+
     @abstractmethod
     def apply(self) -> None:
         """@public
@@ -49,35 +69,6 @@ class Pattern(ABC):
             except IndexError:
                 pass
 
-    def set_dt_schedule(self, start: datetime, end: datetime) -> None:
-        """@private
-        Iterates between start and end date and returns sets the list of datetimes that
-        the pattern is scheduled.
-        """
-        self.iterations = 0
-        start = self._apply_start_date_settings(start)
-        end = self._apply_end_date_settings(end)
-        self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
-        [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
-
-    def _apply_start_date_settings(self, date: datetime) -> datetime:
-        """@private
-        Checks if the optional start date variables are set and returns updated value.
-        """
-        if self.start_date and keep_or_convert(self.start_date) > date:
-            date = keep_or_convert(self.start_date)
-        elif self.offset:
-            date += timedelta_from_str(self.offset)
-        return date
-
-    def _apply_end_date_settings(self, date: datetime) -> datetime:
-        """@private
-        Checks if the optional end date variables are set and returns updated value.
-        """
-        if self.end_date and keep_or_convert(self.end_date) < date:
-            date = keep_or_convert(self.end_date)
-        return date
-
     def scheduled(self, current: datetime) -> bool:
         """@public
         Returns true if pattern is scheduled on the provided date.
@@ -92,3 +83,28 @@ class Pattern(ABC):
             self.iterations += 1
             return True
         return False
+
+    def setup(self, start: datetime, end: datetime) -> None:
+        """@private
+        Iterates between start and end date and returns sets the list of datetimes that
+        the pattern is scheduled.
+        """
+        start, end = self.__apply_date_settings(start, end)
+        self.value = self.__backup_value
+        self.dt_schedule = timedelta_from_schedule(self.schedule, start, end)
+        self.iterations = 0
+        [pattern.setup(start, end) for pattern in self.patterns]
+
+    def __apply_date_settings(
+        self, start: datetime, end: datetime
+    ) -> tuple[datetime, datetime]:
+        """@private
+        Checks if the optional start/end date variables are set and returns updated value.
+        """
+        if self.start_date and keep_or_convert(self.start_date) > start:
+            start = keep_or_convert(self.start_date)
+        elif self.offset:
+            start += timedelta_from_str(self.offset)
+        if self.end_date and keep_or_convert(self.end_date) < end:
+            end = keep_or_convert(self.end_date)
+        return start, end

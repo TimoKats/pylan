@@ -64,7 +64,7 @@ class Item:
             raise Exception("No patterns have been added.")
         start = keep_or_convert(start)
         end = keep_or_convert(end)
-        [pattern.set_dt_schedule(start, end) for pattern in self.patterns]
+        [pattern.setup(start, end) for pattern in self.patterns]
         self.value = self.start_value
         result = Result()
 
@@ -92,7 +92,7 @@ class Item:
         if not self.patterns:
             raise Exception("No patterns have been added.")
         while self.value <= stop_value:
-            [pattern.set_dt_schedule(start, current) for pattern in self.patterns]
+            [pattern.setup(start, current) for pattern in self.patterns]
             for pattern in self.patterns:
                 if pattern.scheduled(current):
                     pattern.apply(self)

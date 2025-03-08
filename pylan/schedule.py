@@ -79,8 +79,8 @@ def interval_schedule(start: datetime, end: datetime, interval: str) -> list[dat
     interval = timedelta_from_str(interval)
     current = start
     while current <= end:
-        dt_schedule.append(current)
         current += interval
+        dt_schedule.append(current)
     return dt_schedule
 
 
