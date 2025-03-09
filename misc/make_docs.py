@@ -3,7 +3,7 @@ import os
 
 introduction = """
 
-Pylan is a Python library that simulates the impact of scheduled events over time. You can install the Python library using PyPi with the following command:
+Pylan is a Python library that simulates the impact of scheduled events. You can install the Python library using PyPi with the following command:
 
 ```
 pip install pylan-lib
@@ -12,17 +12,21 @@ pip install pylan-lib
 This code snippet shows some basic functionality when doing simulations.
 
 ```python
-from pylan import AddGrow, Item, Subtract
+from pylan import Item, Subtract, Add, Multiply
 
 savings = Item(start_value=100)
-dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
-growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d") # every month 24th
+salary_payments = Add("1m", 2500, offset="24d") # Salary paid every month at the 24th
+salary_increase = Multiply("1y", 1.2) # Salary grows each year 20%
 mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-savings.add_patterns([growing_salary, dividends, mortgage])
+salary_payments.add_pattern(salary_increase) # Add increase to salary pattern
+savings.add_patterns([salary_payments, mortgage])
 result = savings.run("2024-1-1", "2028-1-1")
 
 x, y = result.plot_axes()
+
+plt.plot(x, y)
+plt.show()
 
 ```
 
@@ -49,7 +53,7 @@ Same as timedelta, but then alternates between the schedules. For example, ["2d"
 #### Datetime lists
 A list of datetime objects or str that resemble datetime objects. For example, ["2024-1-1", "2025-1-1"].
 
-> **_NOTE:_**  The date format in pylan is yyyy-mm-dd. Currently this is not configurable.
+**_NOTE:_**  The date format in pylan is yyyy-mm-dd. Currently this is not configurable.
 
 """
 

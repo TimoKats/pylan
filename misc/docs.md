@@ -1,6 +1,6 @@
 
 
-Pylan is a Python library that simulates the impact of scheduled events over time. You can install the Python library using PyPi with the following command:
+Pylan is a Python library that simulates the impact of scheduled events. You can install the Python library using PyPi with the following command:
 
 ```
 pip install pylan-lib
@@ -9,17 +9,21 @@ pip install pylan-lib
 This code snippet shows some basic functionality when doing simulations.
 
 ```python
-from pylan import AddGrow, Item, Subtract
+from pylan import Item, Subtract, Add, Multiply
 
 savings = Item(start_value=100)
-dividends = AddGrow("90d", 100, "1y", 1.1) # the dividend will grow with 10% each year
-growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d") # every month 24th
+salary_payments = Add("1m", 2500, offset="24d") # Salary paid every month at the 24th
+salary_increase = Multiply("1y", 1.2) # Salary grows each year 20%
 mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-savings.add_patterns([growing_salary, dividends, mortgage])
+salary_payments.add_pattern(salary_increase) # Add increase to salary pattern
+savings.add_patterns([salary_payments, mortgage])
 result = savings.run("2024-1-1", "2028-1-1")
 
 x, y = result.plot_axes()
+
+plt.plot(x, y)
+plt.show()
 
 ```
 
@@ -72,7 +76,7 @@ object with all the iterations per day/month/etc.
 >>> savings.run("2024-1-1", "2025-1-1")
 ```
 
-#### Item.until(self, stop_value: float) -> timedelta:
+#### Item.until(
 
 
 Runs the provided patterns until a stop value is reached. Returns the timedelta
@@ -103,6 +107,11 @@ schedule and values as attributes (which are both lists).
 
 String format of result is a column oriented table with dates and values.
 
+#### Result.__repr__(self) -> str:
+
+
+String format of result is a column oriented table with dates and values.
+
 #### Result.__getitem__(self, key: str | datetime) -> float | int:
 
 
@@ -121,6 +130,11 @@ Returns the result on the last day of the simulation.
 >>> result = savings.run("2024-1-1", "2024-3-1")
 >>> result.final
 ```
+
+#### Result.valid(self):
+
+
+Returns true if the result has a valid format
 
 #### Result.plot_axes(self, categorical_x_axis: bool = False) -> tuple[list, list]:
 
@@ -152,8 +166,6 @@ Pattern is an abstract base class with the following implementations:
 - Subtract(schedule, value)
 - Multiply(schedule, value)
 - Divide(schedule, value)
-- AddGrow(schedule for addition, addition value, schedule for multiplication, multiply value):
-  Adds a value that can be {de,in}creased over time based on another schedule.
 
 Note, all implementations have the following optional parameters:
 - __start_date__: str or datetime with the minimum date for the pattern to start
@@ -161,8 +173,6 @@ Note, all implementations have the following optional parameters:
 - __offset__: str, offsets each occurence of the pattern based on the start date
 
 ```python
->>> dividends = AddGrow("90d", 100, "1y", 1.1)
->>> growing_salary = AddGrow("1m", 2500, "1y", 1.2, offset="24d")
 >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
 ```
@@ -172,6 +182,12 @@ Note, all implementations have the following optional parameters:
 
 Applies the pattern to the item provided as a parameter. Implemented in the
 specific classes.
+
+#### Pattern.add_pattern(self, pattern: Any) -> None:
+
+
+Applies the pattern to the value of this pattern. E.g. You add a salary each month,
+over time this salary can grow using another pattern.
 
 #### Pattern.scheduled(self, current: datetime) -> bool:
 
@@ -197,6 +213,6 @@ Same as timedelta, but then alternates between the schedules. For example, ["2d"
 #### Datetime lists
 A list of datetime objects or str that resemble datetime objects. For example, ["2024-1-1", "2025-1-1"].
 
-> **_NOTE:_**  The date format in pylan is yyyy-mm-dd. Currently this is not configurable.
+**_NOTE:_**  The date format in pylan is yyyy-mm-dd. Currently this is not configurable.
 
 

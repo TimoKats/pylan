@@ -26,7 +26,21 @@ class Result:
         """
         str_result = ""
         for date, value in zip(self.schedule, self.values):
-            str_result += str(date) + "   " + str(value) + "\n"
+            str_result += str(date) + "\t" + str(value) + "\n"
+        return str_result
+
+    def __repr__(self) -> str:
+        """@public
+        String format of result is a column oriented table with dates and values.
+        """
+        str_result = ""
+        seperator = False
+        for index, (date, value) in enumerate(zip(self.schedule, self.values)):
+            if index < 5 or index > len(self.values) - 6:
+                str_result += str(date) + "\t" + str(value) + "\n"
+            elif not seperator:
+                str_result += "...\n"
+                seperator = True
         return str_result
 
     def __getitem__(self, key: str | datetime) -> float | int:
@@ -50,6 +64,13 @@ class Result:
         >>> result.final
         """
         return self.values[-1:][0]
+
+    @property
+    def valid(self):
+        """@public
+        Returns true if the result has a valid format
+        """
+        return len(self.schedule) == len(self.values)
 
     def plot_axes(self, categorical_x_axis: bool = False) -> tuple[list, list]:
         """@public
