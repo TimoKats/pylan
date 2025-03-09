@@ -138,6 +138,14 @@ class TestItems(unittest.TestCase):
         start.add_patterns([adds, test])
         self.assertEqual(len(start.patterns), 2)
 
+    def test_until_pattern(self):
+        savings = Item(start_value=10)
+        dividends = Add("3d", 10)
+        dividends_growth = Multiply("7d", 2)
+        dividends.add_pattern(dividends_growth)
+        savings.add_patterns([dividends])
+        self.assertEqual(savings.until(10000), 60)
+
 
 if __name__ == "__main__":
     unittest.main()
