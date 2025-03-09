@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 
 from pylan import Add, Item, Multiply
 from pylan.schedule import timedelta_from_schedule
