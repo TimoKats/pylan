@@ -1,6 +1,8 @@
 import unittest
 from datetime import datetime
 
+from dateutil import relativedelta
+
 from pylan import Add, Item, Multiply
 from pylan.schedule import timedelta_from_schedule
 
@@ -144,7 +146,7 @@ class TestItems(unittest.TestCase):
         dividends_growth = Multiply("7d", 2)
         dividends.add_pattern(dividends_growth)
         savings.add_patterns([dividends])
-        self.assertEqual(savings.until(10000), 60)
+        self.assertEqual(savings.until(10000), relativedelta(days=60))
 
 
 if __name__ == "__main__":
