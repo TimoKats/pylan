@@ -1,2 +1,2 @@
-python-dateutil
-cron-converter
+python-dateutil>=2.9.0
+cron-converter>=1.2.0
