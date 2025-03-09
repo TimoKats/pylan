@@ -90,18 +90,18 @@ class Item:
         >>> savings.add_patterns([gains, adds])
         >>> savings.until(200)  # returns timedelta
         """
-        current = start + self.granularity.timedelta
+        end = start + self.granularity.timedelta
         self.value = self.start_value
         delta = timedelta()
         iterations = 0
         if not self.patterns:
             raise Exception("No patterns have been added.")
         while self.value <= stop_value:
-            [pattern.setup(start, current, iterative=True) for pattern in self.patterns]
+            [pattern.setup(start, end, iterative=True) for pattern in self.patterns]
             for pattern in self.patterns:
-                if pattern.scheduled(current):
+                if pattern.scheduled(end):
                     pattern.apply(self)
-            current += self.granularity.timedelta
+            end += self.granularity.timedelta
             delta += self.granularity.timedelta
             iterations += 1
             if iterations > max_iterations:
