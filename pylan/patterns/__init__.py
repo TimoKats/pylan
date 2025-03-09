@@ -86,18 +86,20 @@ class Pattern(ABC):
             return True
         return False
 
-    def setup(self, start: datetime, end: datetime) -> None:
+    def setup(self, start: datetime, end: datetime, iterative: bool = False) -> None:
         """@private
         Iterates between start and end date and returns sets the list of datetimes that
-        the pattern is scheduled.
+        the pattern is scheduled. Note, the model is iterative for until() computes. In
+        these cases the values and iterations should not be reset.
         """
+        if not iterative:
+            self.value = self.__backup_value
+            self.iterations = 0
         start, end = self.__apply_date_settings(start, end)
-        self.value = self.__backup_value
         self.dt_schedule = timedelta_from_schedule(
             self.schedule, start, end, self.include_start
         )
-        self.iterations = 0
-        [pattern.setup(start, end) for pattern in self.patterns]
+        [pattern.setup(start, end, iterative) for pattern in self.patterns]
 
     def __apply_date_settings(
         self, start: datetime, end: datetime

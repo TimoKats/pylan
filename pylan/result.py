@@ -26,7 +26,7 @@ class Result:
         """
         str_result = ""
         for date, value in zip(self.schedule, self.values):
-            str_result += str(date) + "   " + str(value) + "\n"
+            str_result += str(date) + "\t" + str(value) + "\n"
         return str_result
 
     def __repr__(self) -> str:
@@ -37,7 +37,7 @@ class Result:
         seperator = False
         for index, (date, value) in enumerate(zip(self.schedule, self.values)):
             if index < 5 or index > len(self.values) - 6:
-                str_result += str(date) + "   " + str(value) + "\n"
+                str_result += str(date) + "\t" + str(value) + "\n"
             elif not seperator:
                 str_result += "...\n"
                 seperator = True
