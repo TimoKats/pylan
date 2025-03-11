@@ -7,7 +7,7 @@ from pylan.schedule import keep_or_convert
 
 @dataclass
 class Result:
-    """
+    """@public
     Outputted by an item run. Result of a simulation between start and end date. Has the
     schedule and values as attributes (which are both lists).
 
