@@ -14,9 +14,9 @@ class Pattern(ABC):
     - Divide(schedule, value)
 
     Note, all implementations have the following optional parameters:
-    - __start_date__: str or datetime with the minimum date for the pattern to start
-    - __end_date__: str or datetime, max date for the pattern
-    - __offset__: str, offsets each occurence of the pattern based on the start date
+    - start_date: str or datetime with the minimum date for the pattern to start
+    - end_date: str or datetime, max date for the pattern
+    - offset: str, offsets each occurence of the pattern based on the start date
 
     >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
     >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
