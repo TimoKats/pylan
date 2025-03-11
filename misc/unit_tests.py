@@ -115,15 +115,16 @@ class TestPatterns(unittest.TestCase):
         adds = Add("1d", 1)
         multiplies = Multiply("2d", 2)
         start = Item(start_value=1)
-        start.add_patterns([adds, multiplies])
-        self.assertEqual(start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 77)
+        adds.add_pattern(multiplies)
+        start.add_pattern(adds)
+        self.assertEqual(start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 47)
 
     def test_offset(self):
-        test = Multiply("1m", 1, offset="1m")
+        test = Add("1m", 1, offset="1m", include_start=True)
         savings = Item(start_value=100)
         savings.add_pattern(test)
-        savings.run("2024-1-1", "2024-2-1")
-        self.assertEqual(1, len(savings.patterns[0].dt_schedule))
+        result = savings.run("2024-1-1", "2024-2-1")
+        self.assertEqual(result.final, 101)
 
 
 class TestItems(unittest.TestCase):
@@ -149,28 +150,28 @@ class TestItems(unittest.TestCase):
         self.assertEqual(savings.until(10000), relativedelta(days=60))
 
     def test_multiple_runs(self):
-        savings_2 = Item(start_value=100)
+        savings = Item(start_value=100)
         salary_payments = Add("1m", 2500, offset="24d")
         salary_increase = Multiply("1y", 1.2)
         salary_payments.add_pattern(salary_increase)
-        savings_2.add_patterns([salary_payments])
+        savings.add_patterns([salary_payments])
 
-        result_1 = savings_2.run("2024-1-1", "2028-1-1", Granularity.day)
-        savings_2.until(300)
-        for date, saved in savings_2.iterate("2024-1-1", "2024-4-1", Granularity.day):
+        result_1 = savings.run("2024-1-1", "2028-1-1", Granularity.day)
+        savings.until(300)
+        for date, saved in savings.iterate("2024-1-1", "2024-4-1", Granularity.day):
             pass
-        result_2 = savings_2.run("2024-1-1", "2028-1-1", Granularity.hour)
+        result_2 = savings.run("2024-1-1", "2028-1-1", Granularity.hour)
         self.assertEqual(result_1.final, result_2.final)
 
     def test_item_iterator(self):
         test = []
-        savings_3 = Item(start_value=100)
+        savings = Item(start_value=100)
         salary_payments = Add("1m", 2500, offset="24d")
         salary_increase = Multiply("1y", 1.2)
 
         salary_payments.add_pattern(salary_increase)
-        savings_3.add_patterns([salary_payments])
-        for date, saved in savings_3.iterate("2024-1-1", "2024-4-1", Granularity.day):
+        savings.add_patterns([salary_payments])
+        for date, saved in savings.iterate("2024-1-1", "2024-4-1", Granularity.day):
             test.append((date, saved.value))
         self.assertEqual(len(test), 92)
 
