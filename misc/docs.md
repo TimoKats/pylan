@@ -32,6 +32,21 @@ There are 2 important classes in this library: Item and Pattern. A pattern is an
 
 
 ---
+## Class: Granularity
+
+
+Refers to the minimum step size needed for iterations given a set of patterns. Can be
+tweaked for Item.run(). Note that the default value here is the minimum granularity
+of the added patterns. Supports: hour, day, week, month, year
+
+```python
+>>> from pylan import Granularity
+>>> savings.run("2024-1-1", "2028-1-1", Granularity.day)
+>>> savings.run("2024-1-1", "2028-1-1", Granularity.month)
+```
+
+
+---
 ## Class: Item
 
 An item that you can apply patterns to and simulate over time. Optionally, you can
@@ -64,7 +79,7 @@ Adds a list of patterns object to this item.
 >>> savings.add_patterns([gains, adds])
 ```
 
-#### Item.run(self, start: datetime | str, end: datetime | str) -> list:
+#### Item.run(
 
 
 Runs the provided patterns between the start and end date. Creates a result

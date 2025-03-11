@@ -51,7 +51,9 @@ class Item:
         except TypeError:
             raise Exception("parameter is not list, use add_pattern instead.")
 
-    def run(self, start: datetime | str, end: datetime | str) -> list:
+    def run(
+        self, start: datetime | str, end: datetime | str, granularity: Granularity = None
+    ) -> list:
         """@public
         Runs the provided patterns between the start and end date. Creates a result
         object with all the iterations per day/month/etc.
@@ -60,6 +62,8 @@ class Item:
         >>> savings.add_patterns([gains, adds])
         >>> savings.run("2024-1-1", "2025-1-1")
         """
+        if not granularity:
+            granularity = self.granularity
         if not self.patterns:
             raise Exception("No patterns have been added.")
         start = keep_or_convert(start)
@@ -73,7 +77,7 @@ class Item:
                 if pattern.scheduled(start):
                     pattern.apply(self)
             result.add_result(start, self.value)
-            start += self.granularity.timedelta
+            start += granularity.timedelta
         return result
 
     def until(
