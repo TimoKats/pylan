@@ -5,8 +5,14 @@ from dateutil.relativedelta import relativedelta
 
 
 class Granularity(Enum):
-    """@private
-    Refers to the minimum step size needed for iterations given a set of patterns.
+    """@public
+    Refers to the minimum step size needed for iterations given a set of patterns. Can be
+    tweaked for Item.run(). Note that the default value here is the minimum granularity
+    of the added patterns. Supports: hour, day, week, month, year
+
+    >>> from pylan import Granularity
+    >>> savings.run("2024-1-1", "2028-1-1", Granularity.day)
+    >>> savings.run("2024-1-1", "2028-1-1", Granularity.month)
     """
 
     hour = "h"
