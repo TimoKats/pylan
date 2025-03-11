@@ -23,9 +23,15 @@ class ItemIterator:
         [pattern.setup(start, end) for pattern in item.patterns]
 
     def __iter__(self) -> Any:
+        """@private
+        Iter function, gets called in for loops.
+        """
         return self
 
     def __next__(self) -> Any:
+        """@private
+        Every iteration, the current time is increased and patterns are applied.
+        """
         if self.current > self.end:
             raise StopIteration
         for pattern in self.item.patterns:
@@ -101,12 +107,13 @@ class Item:
         self.value = self.start_value
         result = Result()
 
-        while start <= end:
+        current = start
+        while current <= end:
             for pattern in self.patterns:
-                if pattern.scheduled(start):
+                if pattern.scheduled(current):
                     pattern.apply(self)
-            result.add_result(start, self.value)
-            start += granularity.timedelta
+            result.add_result(current, self.value)
+            current += granularity.timedelta
         return result
 
     def until(
@@ -123,18 +130,19 @@ class Item:
         >>> savings.add_patterns([gains, adds])
         >>> savings.until(200)  # returns timedelta
         """
-        end = start + self.granularity.timedelta
+        current = start + self.granularity.timedelta
         self.value = self.start_value
         delta = timedelta()
         iterations = 0
         if not self.patterns:
             raise Exception("No patterns have been added.")
+
         while self.value <= stop_value:
-            [pattern.setup(start, end, iterative=True) for pattern in self.patterns]
+            [pattern.setup(start, current, iterative=True) for pattern in self.patterns]
             for pattern in self.patterns:
-                if pattern.scheduled(end):
+                if pattern.scheduled(current):
                     pattern.apply(self)
-            end += self.granularity.timedelta
+            current += self.granularity.timedelta
             delta += self.granularity.timedelta
             iterations += 1
             if iterations > max_iterations:
