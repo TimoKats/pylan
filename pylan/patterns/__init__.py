@@ -78,7 +78,7 @@ class Pattern(ABC):
         if self.patterns:
             self.update_value(current)
         if not self.dt_schedule:
-            raise Exception("Datetime schedule not set.")
+            pass  # NOTE: continue silently, for until() function
         if self.iterations >= len(self.dt_schedule):
             return False
         if current >= self.dt_schedule[self.iterations]:
