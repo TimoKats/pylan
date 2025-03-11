@@ -78,7 +78,7 @@ class Pattern(ABC):
         if self.patterns:
             self.update_value(current)
         if not self.dt_schedule:
-            pass  # NOTE: continue silently, for until() function
+            return False
         if self.iterations >= len(self.dt_schedule):
             return False
         if current >= self.dt_schedule[self.iterations]:
