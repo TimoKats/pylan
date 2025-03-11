@@ -1,5 +1,6 @@
-from pylan.item import *  # noqa: F403
-from pylan.patterns.add import *  # noqa: F403
-from pylan.patterns.divide import *  # noqa: F403
-from pylan.patterns.multiply import *  # noqa: F403
-from pylan.patterns.subtract import *  # noqa: F403
+from pylan.granularity import Granularity  # noqa: F401
+from pylan.item import Item  # noqa: F401
+from pylan.patterns.add import Add  # noqa: F401
+from pylan.patterns.divide import Divide  # noqa: F401
+from pylan.patterns.multiply import Multiply  # noqa: F401
+from pylan.patterns.subtract import Subtract  # noqa: F401
