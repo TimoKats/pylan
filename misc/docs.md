@@ -49,6 +49,7 @@ of the added patterns. Supports: hour, day, week, month, year
 ---
 ## Class: Item
 
+
 An item that you can apply patterns to and simulate over time. Optionally, you can
 set a start value.
 
@@ -103,9 +104,21 @@ needed to reach the stop value. NOTE: Don't use offset with a start date here.
 >>> savings.until(200)  # returns timedelta
 ```
 
+#### Item.iterate(
+
+
+Creates Iterator object for the item. Can be used in a for loop. Returns a tuple
+of datetime and item object.
+
+```python
+>>> for date, saved in savings.iterate("2024-1-1", "2025-2-2", Granularity.day):
+>>>     print(date, saved.value)
+```
+
 
 ---
 ## Class: Result
+
 
 Outputted by an item run. Result of a simulation between start and end date. Has the
 schedule and values as attributes (which are both lists).

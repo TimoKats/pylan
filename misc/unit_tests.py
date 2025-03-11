@@ -3,7 +3,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from pylan import Add, Item, Multiply
+from pylan import Add, Granularity, Item, Multiply
 from pylan.schedule import timedelta_from_schedule
 
 
@@ -147,6 +147,32 @@ class TestItems(unittest.TestCase):
         dividends.add_pattern(dividends_growth)
         savings.add_patterns([dividends])
         self.assertEqual(savings.until(10000), relativedelta(days=60))
+
+    def test_multiple_runs(self):
+        savings_2 = Item(start_value=100)
+        salary_payments = Add("1m", 2500, offset="24d")
+        salary_increase = Multiply("1y", 1.2)
+        salary_payments.add_pattern(salary_increase)
+        savings_2.add_patterns([salary_payments])
+
+        result_1 = savings_2.run("2024-1-1", "2028-1-1", Granularity.day)
+        savings_2.until(300)
+        for date, saved in savings_2.iterate("2024-1-1", "2024-4-1", Granularity.day):
+            pass
+        result_2 = savings_2.run("2024-1-1", "2028-1-1", Granularity.hour)
+        self.assertEqual(result_1.final, result_2.final)
+
+    def test_item_iterator(self):
+        test = []
+        savings_3 = Item(start_value=100)
+        salary_payments = Add("1m", 2500, offset="24d")
+        salary_increase = Multiply("1y", 1.2)
+
+        salary_payments.add_pattern(salary_increase)
+        savings_3.add_patterns([salary_payments])
+        for date, saved in savings_3.iterate("2024-1-1", "2024-4-1", Granularity.day):
+            test.append((date, saved.value))
+        self.assertEqual(len(test), 92)
 
 
 if __name__ == "__main__":

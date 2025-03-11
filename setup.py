@@ -16,7 +16,7 @@ def read(*paths, **kwargs):
     return content
 
 
-def read_requirements(path):
+def read_requirements(path: str) -> list:
     return [
         line.strip()
         for line in read(path).split("\n")
@@ -27,11 +27,14 @@ def read_requirements(path):
 setup(
     name="pylan-lib",
     version=os.environ["VERSION"],
-    description="Python library for time based planning.",
+    description="Python library that simulates the combined impact of recurring events.",
     url="https://github.com/TimoKats/pylan",
     long_description=read("misc/docs.md"),
     long_description_content_type="text/markdown",
     author="Timo Kats",
+    author_email="hello@timokats.xyz",
+    license="BSD",
     packages=find_packages(exclude=[".github"]),
     install_requires=read_requirements("requirements.txt"),
+    keywords=["timeseries", "simulation", "planning"],
 )

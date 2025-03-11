@@ -7,7 +7,7 @@ from pylan.schedule import keep_or_convert
 
 @dataclass
 class Result:
-    """
+    """@public
     Outputted by an item run. Result of a simulation between start and end date. Has the
     schedule and values as attributes (which are both lists).
 
@@ -25,8 +25,8 @@ class Result:
         String format of result is a column oriented table with dates and values.
         """
         str_result = ""
-        for date, value in zip(self.schedule, self.values):
-            str_result += str(date) + "\t" + str(value) + "\n"
+        for index, (date, value) in enumerate(zip(self.schedule, self.values)):
+            str_result += str(index) + "\t" + str(date) + "\t" + str(value) + "\n"
         return str_result
 
     def __repr__(self) -> str:
@@ -37,7 +37,7 @@ class Result:
         seperator = False
         for index, (date, value) in enumerate(zip(self.schedule, self.values)):
             if index < 5 or index > len(self.values) - 6:
-                str_result += str(date) + "\t" + str(value) + "\n"
+                str_result += str(index) + "\t" + str(date) + "\t" + str(value) + "\n"
             elif not seperator:
                 str_result += "...\n"
                 seperator = True

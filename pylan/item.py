@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Any
 
 from pylan.granularity import Granularity
 from pylan.patterns import Pattern
@@ -6,8 +7,36 @@ from pylan.result import Result
 from pylan.schedule import keep_or_convert
 
 
+class ItemIterator:
+    def __init__(
+        self, item: Any, start: datetime, end: datetime, granularity: Granularity
+    ) -> None:
+        """@private
+        Iterator class for the item object. See the docstring of Item.iterate() for more
+        information.
+        """
+        self.item = item
+        self.start = start
+        self.current = start
+        self.end = end
+        self.granularity = granularity
+        [pattern.setup(start, end) for pattern in item.patterns]
+
+    def __iter__(self) -> Any:
+        return self
+
+    def __next__(self) -> Any:
+        if self.current > self.end:
+            raise StopIteration
+        for pattern in self.item.patterns:
+            if pattern.scheduled(self.current):
+                pattern.apply(self.item)
+        self.current += self.granularity.timedelta
+        return self.current, self.item
+
+
 class Item:
-    """
+    """@public
     An item that you can apply patterns to and simulate over time. Optionally, you can
     set a start value.
 
@@ -111,3 +140,17 @@ class Item:
             if iterations > max_iterations:
                 raise Exception("Max iterations (" + str(max_iterations) + ") reached.")
         return delta
+
+    def iterate(
+        self, start: datetime | str, end: datetime | str, granularity: Granularity
+    ) -> ItemIterator:
+        """@public
+        Creates Iterator object for the item. Can be used in a for loop. Returns a tuple
+        of datetime and item object.
+
+        >>> for date, saved in savings.iterate("2024-1-1", "2025-2-2", Granularity.day):
+        >>>     print(date, saved.value)
+        """
+        start = keep_or_convert(start)
+        end = keep_or_convert(end)
+        return ItemIterator(self, start, end, granularity)
