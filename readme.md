@@ -21,7 +21,7 @@ To get started, you can install the Python library using PyPi with the following
 pip install pylan-lib
 ```
 
-This code snippet shows some functionalities available when doing simulations. For more information, please see the documentation on [pypi](https://pypi.org/project/pylan-lib/).
+This code snippet shows some functionalities available when doing simulations. For more information, please see the documentation on [pypi](https://pypi.org/project/pylan-lib/). **Also, I've added some useful examples of pylan in [this slidedeck](https://timokats.xyz/downloads/2025_pylan_presentation.pdf)**
 
 ```python
 import matplotlib.pyplot as plt
