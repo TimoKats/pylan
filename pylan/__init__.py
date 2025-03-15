@@ -3,5 +3,6 @@ from pylan.item import Item  # noqa: F401
 from pylan.patterns.add import Add  # noqa: F401
 from pylan.patterns.divide import Divide  # noqa: F401
 from pylan.patterns.multiply import Multiply  # noqa: F401
+from pylan.patterns.replace import Replace  # noqa: F401
 from pylan.patterns.subtract import Subtract  # noqa: F401
 from pylan.result import Result  # noqa: F401

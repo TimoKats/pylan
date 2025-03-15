@@ -12,6 +12,7 @@ class Pattern(ABC):
     - Subtract(schedule, value)
     - Multiply(schedule, value)
     - Divide(schedule, value)
+    - Replace(schedule, value)
 
     Note, all implementations have the following optional parameters:
     - start_date: str or datetime with the minimum date for the pattern to start
