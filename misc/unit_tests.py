@@ -3,7 +3,7 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 
-from pylan import Add, Granularity, Item, Multiply
+from pylan import Add, Granularity, Item, Multiply, Replace
 from pylan.schedule import timedelta_from_schedule
 
 
@@ -92,6 +92,12 @@ class TestPatterns(unittest.TestCase):
         self.assertEqual(
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 190
         )
+
+    def test_basic_replace(self):
+        adds = Replace("1d", 10)
+        start = Item(start_value=100)
+        start.add_pattern(adds)
+        self.assertEqual(start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 10)
 
     def test_basic_multiplication(self):
         adds = Add("1d", 10)
