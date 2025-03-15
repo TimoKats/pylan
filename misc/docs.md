@@ -194,11 +194,12 @@ Pattern is an abstract base class with the following implementations:
 - Subtract(schedule, value)
 - Multiply(schedule, value)
 - Divide(schedule, value)
+- Replace(schedule, value)
 
 Note, all implementations have the following optional parameters:
-- __start_date__: str or datetime with the minimum date for the pattern to start
-- __end_date__: str or datetime, max date for the pattern
-- __offset__: str, offsets each occurence of the pattern based on the start date
+- start_date: str or datetime with the minimum date for the pattern to start
+- end_date: str or datetime, max date for the pattern
+- offset: str, offsets each occurence of the pattern based on the start date
 
 ```python
 >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
