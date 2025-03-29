@@ -47,9 +47,3 @@ plt.show()
   <img src=".github/example.png" width="100%" alt="pylan-logo" />
 </div>
 
-## Roadmap
-This version is very basic. I plan to add more things, so I'm looking for suggestions. This is a list of basic ideas that are currently on the roadmap.
-- Multivariate operators. E.g. Adding salary that grows over time. Or bonds that pay off over time and at the end.
-- Combining items and interact between them. For example, take money out of a savings item and put it in an investment item.
-- More built-in timeframes, like quarterly, YTD, YOY, etc.
-- ...
