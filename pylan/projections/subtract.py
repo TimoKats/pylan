@@ -1,10 +1,10 @@
 from pylan.item import Item
-from pylan.patterns import Pattern
+from pylan.projections import Projection
 
 
-class Subtract(Pattern):
+class Subtract(Projection):
     def apply(self, item: Item) -> None:
         """@private
-        Adds the pattern value to the item value.
+        Adds the projection value to the item value.
         """
         item.value -= self.value

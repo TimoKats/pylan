@@ -84,11 +84,11 @@ class TestTimeDelta(unittest.TestCase):
         )
 
 
-class TestPatterns(unittest.TestCase):
+class TestProjections(unittest.TestCase):
     def test_basic_addition(self):
         adds = Add("1d", 10)
         start = Item(start_value=100)
-        start.add_pattern(adds)
+        start.add_projection(adds)
         self.assertEqual(
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 190
         )
@@ -96,71 +96,71 @@ class TestPatterns(unittest.TestCase):
     def test_basic_replace(self):
         adds = Replace("1d", 10)
         start = Item(start_value=100)
-        start.add_pattern(adds)
+        start.add_projection(adds)
         self.assertEqual(start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 10)
 
     def test_basic_multiplication(self):
         adds = Add("1d", 10)
         multiplies = Multiply("3d", 2)
         start = Item(start_value=100)
-        start.add_pattern(adds)
-        start.add_pattern(multiplies)
+        start.add_projection(adds)
+        start.add_projection(multiplies)
         self.assertEqual(
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 1220
         )
 
-    def test_pattern_manipulation(self):
+    def test_projection_manipulation(self):
         adds = Add("1d", 10, start_date="2024-5-3")
         start = Item(start_value=100)
-        start.add_patterns([adds])
+        start.add_projections([adds])
         self.assertEqual(
             start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 170
         )
 
-    def test_nested_patterns(self):
+    def test_nested_projections(self):
         adds = Add("1d", 1)
         multiplies = Multiply("2d", 2)
         start = Item(start_value=1)
-        adds.add_pattern(multiplies)
-        start.add_pattern(adds)
+        adds.add_projection(multiplies)
+        start.add_projection(adds)
         self.assertEqual(start.run(datetime(2024, 5, 1), datetime(2024, 5, 10)).final, 47)
 
     def test_offset(self):
         test = Add("1m", 1, offset="1m", include_start=True)
         savings = Item(start_value=100)
-        savings.add_pattern(test)
+        savings.add_projection(test)
         result = savings.run("2024-1-1", "2024-2-1")
         self.assertEqual(result.final, 101)
 
 
 class TestItems(unittest.TestCase):
-    def test_add_pattern(self):
+    def test_add_projection(self):
         adds = Add("1d", 10)
         start = Item(start_value=100)
-        start.add_pattern(adds)
-        self.assertEqual(len(start.patterns), 1)
+        start.add_projection(adds)
+        self.assertEqual(len(start.projections), 1)
 
-    def test_add_patterns(self):
+    def test_add_projections(self):
         adds = Add("1d", 10)
         test = Add("2d", 10)
         start = Item(start_value=100)
-        start.add_patterns([adds, test])
-        self.assertEqual(len(start.patterns), 2)
+        start.add_projections([adds, test])
+        self.assertEqual(len(start.projections), 2)
 
-    def test_until_pattern(self):
+    def test_until_projection(self):
         savings = Item(start_value=10)
         dividends = Add("3d", 10)
         dividends_growth = Multiply("7d", 2)
-        dividends.add_pattern(dividends_growth)
-        savings.add_patterns([dividends])
+        dividends.add_projection(dividends_growth)
+        savings.add_projections([dividends])
         self.assertEqual(savings.until(10000), relativedelta(days=60))
 
     def test_multiple_runs(self):
         savings = Item(start_value=100)
         salary_payments = Add("1m", 2500, offset="24d")
         salary_increase = Multiply("1y", 1.2)
-        salary_payments.add_pattern(salary_increase)
-        savings.add_patterns([salary_payments])
+        salary_payments.add_projection(salary_increase)
+        savings.add_projections([salary_payments])
 
         result_1 = savings.run("2024-1-1", "2028-1-1", Granularity.day)
         savings.until(300)
@@ -175,8 +175,8 @@ class TestItems(unittest.TestCase):
         salary_payments = Add("1m", 2500, offset="24d")
         salary_increase = Multiply("1y", 1.2)
 
-        salary_payments.add_pattern(salary_increase)
-        savings.add_patterns([salary_payments])
+        salary_payments.add_projection(salary_increase)
+        savings.add_projections([salary_payments])
         for date, saved in savings.iterate("2024-1-1", "2024-4-1", Granularity.day):
             test.append((date, saved.value))
         self.assertEqual(len(test), 92)
