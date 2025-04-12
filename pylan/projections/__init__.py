@@ -5,9 +5,9 @@ from typing import Any
 from pylan.schedule import keep_or_convert, timedelta_from_schedule, timedelta_from_str
 
 
-class Pattern(ABC):
+class Projection(ABC):
     """@public
-    Pattern is an abstract base class with the following implementations:
+    Projection is an abstract base class with the following implementations:
     - Add(schedule, value)
     - Subtract(schedule, value)
     - Multiply(schedule, value)
@@ -15,9 +15,9 @@ class Pattern(ABC):
     - Replace(schedule, value)
 
     Note, all implementations have the following optional parameters:
-    - start_date: str or datetime with the minimum date for the pattern to start
-    - end_date: str or datetime, max date for the pattern
-    - offset: str, offsets each occurence of the pattern based on the start date
+    - start_date: str or datetime with the minimum date for the projection to start
+    - end_date: str or datetime, max date for the projection
+    - offset: str, offsets each occurence of the projection based on the start date
 
     >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
     >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
@@ -37,7 +37,7 @@ class Pattern(ABC):
         self.include_start = include_start
         self.iterations = 0
         self.dt_schedule = []
-        self.patterns = []
+        self.projections = []
 
         self.start_date = start_date
         self.offset = offset
@@ -48,35 +48,35 @@ class Pattern(ABC):
     @abstractmethod
     def apply(self) -> None:
         """@public
-        Applies the pattern to the item provided as a parameter. Implemented in the
+        Applies the projection to the item provided as a parameter. Implemented in the
         specific classes.
         """
         pass
 
-    def add_pattern(self, pattern: Any) -> None:
+    def add_projection(self, projection: Any) -> None:
         """@public
-        Applies the pattern to the value of this pattern. E.g. You add a salary each month,
-        over time this salary can grow using another pattern.
+        Applies the projection to the value of this projection. E.g. You add a salary each month,
+        over time this salary can grow using another projection.
         """
-        self.patterns.append(pattern)
+        self.projections.append(projection)
 
     def update_value(self, current: datetime) -> None:
         """@private
         Grows the value the amount of times that it was scheduled in the past.
         """
-        for pattern in self.patterns:
+        for projection in self.projections:
             try:
-                while pattern.dt_schedule[pattern.iterations] < current:
-                    pattern.apply(self)
-                    pattern.iterations += 1
+                while projection.dt_schedule[projection.iterations] < current:
+                    projection.apply(self)
+                    projection.iterations += 1
             except IndexError:
                 pass
 
     def scheduled(self, current: datetime) -> bool:
         """@public
-        Returns true if pattern is scheduled on the provided date.
+        Returns true if projection is scheduled on the provided date.
         """
-        if self.patterns:
+        if self.projections:
             self.update_value(current)
         if not self.dt_schedule:
             return False
@@ -90,7 +90,7 @@ class Pattern(ABC):
     def setup(self, start: datetime, end: datetime, iterative: bool = False) -> None:
         """@private
         Iterates between start and end date and returns sets the list of datetimes that
-        the pattern is scheduled. Note, the model is iterative for until() computes. In
+        the projection is scheduled. Note, the model is iterative for until() computes. In
         these cases the values and iterations should not be reset.
         """
         if not iterative:
@@ -100,7 +100,7 @@ class Pattern(ABC):
         self.dt_schedule = timedelta_from_schedule(
             self.schedule, start, end, self.include_start
         )
-        [pattern.setup(start, end, iterative) for pattern in self.patterns]
+        [projection.setup(start, end, iterative) for projection in self.projections]
 
     def __apply_date_settings(
         self, start: datetime, end: datetime

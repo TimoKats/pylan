@@ -16,8 +16,8 @@ salary_payments = Add("1m", 2500, offset="24d") # Salary paid every month at the
 salary_increase = Multiply("1y", 1.2) # Salary grows each year 20%
 mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-salary_payments.add_pattern(salary_increase) # Add increase to salary pattern
-savings.add_patterns([salary_payments, mortgage])
+salary_payments.add_projection(salary_increase) # Add increase to salary projection
+savings.add_projections([salary_payments, mortgage])
 result = savings.run("2024-1-1", "2028-1-1")
 
 x, y = result.plot_axes()
@@ -27,7 +27,7 @@ plt.show()
 
 ```
 
-There are 2 important classes in this library: Item and Pattern. A pattern is an abstract base class, with multiple implementations. These implementations resemble a time based pattern (e.g. add 10 every month, yearly inflation, etc). The Item is something that patterns can be added to, like a savings account.
+There are 2 important classes in this library: Item and Projection. A projection is an abstract base class, with multiple implementations. These implementations resemble a time based projection (e.g. add 10 every month, yearly inflation, etc). The Item is something that projections can be added to, like a savings account.
 
 
 
@@ -35,9 +35,9 @@ There are 2 important classes in this library: Item and Pattern. A pattern is an
 ## Class: Granularity
 
 
-Refers to the minimum step size needed for iterations given a set of patterns. Can be
+Refers to the minimum step size needed for iterations given a set of projections. Can be
 tweaked for Item.run(). Note that the default value here is the minimum granularity
-of the added patterns. Supports: hour, day, week, month, year
+of the added projections. Supports: hour, day, week, month, year
 
 ```python
 >>> from pylan import Granularity
@@ -50,57 +50,57 @@ of the added patterns. Supports: hour, day, week, month, year
 ## Class: Item
 
 
-An item that you can apply patterns to and simulate over time. Optionally, you can
+An item that you can apply projections to and simulate over time. Optionally, you can
 set a start value.
 
 ```python
 >>> savings = Item(start_value=100)
 ```
 
-#### Item.add_pattern(self, pattern: Pattern) -> None:
+#### Item.add_projection(self, projection: Projection) -> None:
 
 
-Add a pattern object to this item.
+Add a projection object to this item.
 
 ```python
 >>> test = Add(["2024-1-4", "2024-2-1"], 1)
 >>> savings = Item(start_value=100)
->>> savings.add_pattern(test)
+>>> savings.add_projection(test)
 ```
 
-#### Item.add_patterns(self, patterns: list[Pattern]) -> None:
+#### Item.add_projections(self, projections: list[Projection]) -> None:
 
 
-Adds a list of patterns object to this item.
+Adds a list of projections object to this item.
 
 ```python
 >>> gains = Multiply("4m", 1)
 >>> adds = Multiply("2d", 1)
 >>> savings = Item(start_value=100)
->>> savings.add_patterns([gains, adds])
+>>> savings.add_projections([gains, adds])
 ```
 
 #### Item.run(
 
 
-Runs the provided patterns between the start and end date. Creates a result
+Runs the provided projections between the start and end date. Creates a result
 object with all the iterations per day/month/etc.
 
 ```python
 >>> savings = Item(start_value=100)
->>> savings.add_patterns([gains, adds])
+>>> savings.add_projections([gains, adds])
 >>> savings.run("2024-1-1", "2025-1-1")
 ```
 
 #### Item.until(
 
 
-Runs the provided patterns until a stop value is reached. Returns the timedelta
+Runs the provided projections until a stop value is reached. Returns the timedelta
 needed to reach the stop value. NOTE: Don't use offset with a start date here.
 
 ```python
 >>> savings = Item(start_value=100)
->>> savings.add_patterns([gains, adds])
+>>> savings.add_projections([gains, adds])
 >>> savings.until(200)  # returns timedelta
 ```
 
@@ -186,10 +186,10 @@ Exports the result to a csv file. Row oriented.
 
 
 ---
-## Class: Pattern
+## Class: Projection
 
 
-Pattern is an abstract base class with the following implementations:
+Projection is an abstract base class with the following implementations:
 - Add(schedule, value)
 - Subtract(schedule, value)
 - Multiply(schedule, value)
@@ -197,38 +197,38 @@ Pattern is an abstract base class with the following implementations:
 - Replace(schedule, value)
 
 Note, all implementations have the following optional parameters:
-- start_date: str or datetime with the minimum date for the pattern to start
-- end_date: str or datetime, max date for the pattern
-- offset: str, offsets each occurence of the pattern based on the start date
+- start_date: str or datetime with the minimum date for the projection to start
+- end_date: str or datetime, max date for the projection
+- offset: str, offsets each occurence of the projection based on the start date
 
 ```python
 >>> mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 >>> inflation = Divide(["2025-1-1", "2026-1-1", "2027-1-1"], 1.08)
 ```
 
-#### Pattern.apply(self) -> None:
+#### Projection.apply(self) -> None:
 
 
-Applies the pattern to the item provided as a parameter. Implemented in the
+Applies the projection to the item provided as a parameter. Implemented in the
 specific classes.
 
-#### Pattern.add_pattern(self, pattern: Any) -> None:
+#### Projection.add_projection(self, projection: Any) -> None:
 
 
-Applies the pattern to the value of this pattern. E.g. You add a salary each month,
-over time this salary can grow using another pattern.
+Applies the projection to the value of this projection. E.g. You add a salary each month,
+over time this salary can grow using another projection.
 
-#### Pattern.scheduled(self, current: datetime) -> bool:
+#### Projection.scheduled(self, current: datetime) -> bool:
 
 
-Returns true if pattern is scheduled on the provided date.
+Returns true if projection is scheduled on the provided date.
 
 
 ---
 
 ## Schedule
 
-Passed to patterns as a parameter. Is converted to a list of datetime objects. Accepts multiple formats.
+Passed to projections as a parameter. Is converted to a list of datetime objects. Accepts multiple formats.
 
 #### Cron schedules
 For example, "0 0 2 * *" runs on the second day of each month.

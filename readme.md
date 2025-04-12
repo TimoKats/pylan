@@ -11,7 +11,7 @@
 [![stars - pylan](https://img.shields.io/github/stars/TimoKats/pylan?style=social)](https://github.com/TimoKats/pylan)
 [![forks - pylan](https://img.shields.io/github/forks/TimoKats/pylan?style=social)](https://github.com/TimoKats/pylan) 
 
-Pylan is a library that calulates/analyzes the combined impact of recurring events. For example, it can be used to analyze the impact of financial patterns, like investment gains, savings, and inflation.
+Pylan is a library that calulates/analyzes the combined impact of recurring events. For example, it can be used to analyze the impact of financial projections, like investment gains, savings, and inflation.
 
 ## Getting started
 
@@ -33,8 +33,8 @@ salary_payments = Add("1m", 2500, offset="24d") # Salary paid every month at the
 salary_increase = Multiply("1y", 1.2) # Salary grows each year 20%
 mortgage = Subtract("0 0 2 * *", 1500)  # cron support
 
-salary_payments.add_pattern(salary_increase) # Add increase to salary pattern
-savings.add_patterns([salary_payments, mortgage])
+salary_payments.add_projection(salary_increase) # Add increase to salary projection
+savings.add_projections([salary_payments, mortgage])
 result = savings.run("2024-1-1", "2028-1-1")
 
 x, y = result.plot_axes()

@@ -4,8 +4,8 @@ savings = Item(start_value=10)
 salary_payments = Add("1m", 2500, offset="24d")
 salary_increase = Multiply("1y", 1.2)
 mortgage = Subtract("0 0 2 * *", 1500)  # cron support
-salary_payments.add_pattern(salary_increase)
-savings.add_patterns([salary_payments])
+salary_payments.add_projection(salary_increase)
+savings.add_projections([salary_payments])
 
 result = Result()
 car_bought = False
